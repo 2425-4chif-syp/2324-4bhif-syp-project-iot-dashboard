@@ -1,6 +1,11 @@
 name: GitHub Actions - LeoEnergy Backend
 run-name: ${{ github.actor }} is using GitHub Actions 🚀
-on: [push]
+on:
+    push:
+      branches:
+        - main
+    workflow_dispatch:
+
 jobs:
   build:
     permissions: write-all
