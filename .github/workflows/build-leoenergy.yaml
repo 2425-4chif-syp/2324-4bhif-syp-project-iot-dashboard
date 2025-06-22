@@ -1,4 +1,4 @@
-name: GitHub Actions - LeoEnergy Backend
+name: Build and Push - LeoEnergy Backend
 run-name: ${{ github.actor }} is using GitHub Actions 🚀
 on:
     push:
