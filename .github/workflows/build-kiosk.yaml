@@ -37,28 +37,6 @@ jobs:
           echo "IMAGE_TAG=${tag}" >> "$GITHUB_ENV"
 
       # Set up Node.js environment
-      - name: Set up Node.js 20 LTS
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: 'npm'
-          cache-dependency-path: 'frontend/kiosk/package-lock.json'
-
-
-
-      # Log in to GitHub Container Registry
-      - name: Log in to GitHub Container Registry
-        uses: docker/login-action@v2
-        with:
-          registry: ghcr.io
-          username: ${{ env.ACTOR_LC }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Find and set image tag
-        run: |
-          if test "${{ github.ref_name }}" = "main"; then tag="latest"; else tag="dev"; fi
-          echo "IMAGE_TAG=${tag}" >> "$GITHUB_ENV"
-
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
