@@ -35,7 +35,7 @@ enabled = true
 
 * Start the services executing `start.sh`.
 * You can stop the services executing `stop.sh`.
-* If there are new images available, there is a automation script called `clean-docker.sh` to delete the old and pull the new images.
+* If there are new images available, there is a automation script called `refresh-docker-compose.sh` to delete the old and pull the new images.
 
 == Nginx as Reverse Proxy
 
