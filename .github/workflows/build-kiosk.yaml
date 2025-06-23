@@ -1,4 +1,4 @@
-name: Build and Push - LeoEnergy Kiosk
+name: Build and Push - LeoEnergy Kiosk1
 run-name: ${{ github.actor }} is using GitHub Actions 🚀
 on:
   push:
