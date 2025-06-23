@@ -1,6 +1,9 @@
 services:
   frontend:
-    image: ghcr.io/2324-4bhif-syp/2324-4bhif-syp-project-iot-dashboard/kiosk:latest
+    build:
+      context: /home/denis/Dokumente/SYP/Fork-github/2324-4bhif-syp-project-iot-dashboard/frontend
+      dockerfile: docker/Dockerfile
+    image: leoenergy-kiosk:local
     container_name: leoenergy-kiosk
     ports:
       - "8000:80"
