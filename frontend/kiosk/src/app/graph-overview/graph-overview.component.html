@@ -1,7 +1,7 @@
 <!-- Container für Titel, Einstellungen und Wetterkomponente auf derselben Höhe -->
 <div class="d-flex justify-content-between align-items-center mb-4">
   <div class="header-center">
-    <h1 *ngIf="currentGraph">{{ currentGraph.title }}</h1>
+    <h1 *ngIf="currentGraph?.title">{{ currentGraph?.title }}</h1>
     <h1 *ngIf="currentIndex === -1" class="text-center"></h1>
     <h1 *ngIf="currentIndex === -2" class="text-center">Wetter</h1>
     <h1 *ngIf="currentIndex === -3" class="text-center">
@@ -32,6 +32,11 @@
             >
               <!-- Optionale Überschrift -->
               <li class="dropdown-header custom-dropdown-header">Dashboard-Einstellungen</li>
+              <li class="dropdown-item text-muted">
+                <strong>Ausgewählt:</strong> {{ months[selectedMonth] }} {{ selectedYear }}
+              </li>
+              <li><hr class="dropdown-divider"></li>
+
 
               <li
                 class="dropdown-item d-flex justify-content-between align-items-center"
@@ -78,7 +83,7 @@
                     {{ duration.long }}
                   </option>
                 </select>
-              </li>              
+              </li>
             </ul>
           </li>
         </ul>
@@ -218,7 +223,7 @@
               <div class="iframe-container">
                 <div class="iframe-background"></div>
                 <iframe
-                  [src]="getSafeUrl(currentGraph.iFrameLink)"
+                  [src]="currentGraph?.iFrameLink ? getSafeUrl(currentGraph.iFrameLink) : null"
                   class="grafana-iframe"
                 ></iframe>
               </div>

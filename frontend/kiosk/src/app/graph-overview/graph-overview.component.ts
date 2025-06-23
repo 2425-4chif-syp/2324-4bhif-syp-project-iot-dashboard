@@ -73,6 +73,9 @@ export class GraphOverviewComponent implements OnInit {
     this.updateGraphLinks();
 
     this.kioskModeChecker();
+
+    // Wähle automatisch heutigen Monat/Jahr aus
+    this.selectMonthYearCombo();
   }
 
   public selectMonthYearCombo(): void {
@@ -142,23 +145,23 @@ export class GraphOverviewComponent implements OnInit {
   calculateStartAndEndOfMonth(month: number, year: number): { from: number, to: number } {
     const startDate = new Date(year, month, 1, 0, 0, 0, 0);
     const endDate = new Date(year, month + 1, 0, 23, 59, 59, 999);
-  
+
     const from = startDate.getTime();
     const to = endDate.getTime();
-  
+
     return { from, to };
   }
 
   public changeDuration(): void {
     console.log("Changing Timeframe to: ", this.selectedDuration.short);
-  
+
     // Setze die Monatsauswahl zurück
     this.isMonthSelected = false;
-    
+
     // Aktualisiere die Graphen-Links sofort nach der Änderung
     this.updateGraphLinks();
   }
-  
+
 
   private updateCurrentGraph(): void {
     if (this.currentIndex !== -1) {
@@ -170,7 +173,7 @@ export class GraphOverviewComponent implements OnInit {
 
   private updateGraphLinks(): void {
     console.log("updateGraphLinks called. isMonthSelected:", this.isMonthSelected, "selectedDuration:", this.selectedDuration.short);
-  
+
     if (this.isMonthSelected) {
       // Monatsansicht aktiv: Berechne Start- und Endzeit
       const { from, to } = this.calculateStartAndEndOfMonth(this.selectedMonth, this.selectedYear);
@@ -191,11 +194,11 @@ export class GraphOverviewComponent implements OnInit {
       });
       console.log("Using Timeframe:", selectedDuration);
     }
-  
+
     // Aktualisiere den aktuellen Graphen, falls einer aktiv ist
     this.updateCurrentGraph();
   }
-  
+
 
   public setCurrentGraphWithIndex(index: number): void {
     this.currentIndex = index;
