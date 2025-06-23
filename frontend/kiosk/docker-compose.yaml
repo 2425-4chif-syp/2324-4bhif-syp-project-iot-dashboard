@@ -2,7 +2,9 @@ version: '3.8'
 services:
   kiosk-app:
     container_name: angular_kiosk
-    build: .
+    build:
+      context: ./frontend/kiosk
+      dockerfile: ../docker/Dockerfile
     image: kiosk:v1
     ports:
       - "80:80"

@@ -39,6 +39,8 @@ export class WeatherComponent implements OnInit{
   sunriseTime?: string;
   sunsetTime?: string;
   daylightDuration?: string;
+  today: Date = new Date();
+
 
   constructor(private weatherService: WeatherService) { }
 

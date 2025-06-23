@@ -1,3 +1,4 @@
+
 <div class="weather-widget">
   <!-- Aktuelles Wetter -->
   <div class="current-weather">
@@ -24,10 +25,12 @@
       <i *ngIf="currentWeatherCondition !== undefined" [class]="getWeatherIcon(currentWeatherCondition)" aria-hidden="true"></i>
     </div>
   </div>
+  <p>Test von Denis am {{ today | date:'shortDate' }}</p>
 
   <!-- Täglicher Wetterverlauf -->
   <div class="daily-chart">
     <h3>Täglicher Wetterverlauf</h3>
+
     <canvas id="dailyWeatherChart"></canvas>
   </div>
 
