@@ -5,83 +5,46 @@
     <h1 *ngIf="currentIndex === -1" class="text-center"></h1>
     <h1 *ngIf="currentIndex === -2" class="text-center">Wetter</h1>
     <h1 *ngIf="currentIndex === -3" class="text-center">
-      <img src="assets/images/live-icon.png" class="live-icon me-2">
-      Sensorboxen</h1>
+      <img src="assets/images/live-icon.png" alt="Live-Icon" class="live-icon me-2">
+      Sensorboxen
+    </h1>
   </div>
 
-  <!-- Einstellungen Dropdown auf der gleichen Höhe ganz rechts -->
   <div class="settings-section ms-auto">
     <nav class="navbar navbar-expand-lg navbar-light">
       <div class="container-fluid justify-content-end">
-        <!-- Dropdown für Einstellungen -->
         <ul class="navbar-nav">
           <li class="nav-item dropdown">
-            <a
-              class="nav-link dropdown-toggle settings-dropdown"
-              href="#"
-              id="settingsDropdown"
-              role="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >
+            <a class="nav-link dropdown-toggle settings-dropdown" href="#" id="settingsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
               <i class="fas fa-cog"></i>
             </a>
-            <ul
-              class="dropdown-menu dropdown-menu-end settings-menu"
-              aria-labelledby="settingsDropdown"
-            >
-              <!-- Optionale Überschrift -->
+            <ul class="dropdown-menu dropdown-menu-end settings-menu" aria-labelledby="settingsDropdown">
               <li class="dropdown-header custom-dropdown-header">Dashboard-Einstellungen</li>
               <li class="dropdown-item text-muted">
-                <strong>Ausgewählt:</strong> {{ months[selectedMonth] }} {{ selectedYear }}
+                <strong>Ausgewählt:</strong>
+                <ng-container [ngSwitch]="selectedDuration.short">
+                  <span *ngSwitchCase="'7d'">KW {{ selectedWeek }}, {{ selectedYear }}</span>
+                  <span *ngSwitchCase="'30d'">{{ months[selectedMonth] }} {{ selectedYear }}</span>
+                  <span *ngSwitchCase="'365d'">{{ selectedYear }}</span>
+                  <span *ngSwitchDefault>{{ selectedDay }}. {{ months[selectedMonth] }} {{ selectedYear }}</span>
+                </ng-container>
+
               </li>
               <li><hr class="dropdown-divider"></li>
-
-
-              <li
-                class="dropdown-item d-flex justify-content-between align-items-center"
-              >
-                <label class="form-check-label mb-0" style="margin-right: 10px"
-                >Kiosk-Mode</label
-                >
-                <input
-                  type="checkbox"
-                  [(ngModel)]="kioskMode"
-                  (change)="kioskModeChecker()"
-                  class="form-check-input"
-                />
+              <li class="dropdown-item d-flex justify-content-between align-items-center">
+                <label class="form-check-label mb-0 me-2">Kiosk-Mode</label>
+                <input type="checkbox" [(ngModel)]="kioskMode" (change)="kioskModeChecker()" class="form-check-input" />
               </li>
               <li class="dropdown-item">
-                <label for="intervalRange" class="form-label"
-                >Intervall: {{ interval }} Sekunden</label
-                >
+                <label for="intervalRangeUnique" class="form-label">Intervall: {{ interval }} Sekunden</label>
                 <div class="d-flex align-items-center">
-                  <input
-                    id="intervalRange"
-                    type="range"
-                    min="5"
-                    max="60"
-                    [(ngModel)]="interval"
-                    (change)="deactivateKioskMode(); kioskModeChecker()"
-                    class="form-range mt-2"
-                    style="width: 100%"
-                  />
+                  <input id="intervalRangeUnique" type="range" min="5" max="60" [(ngModel)]="interval" (change)="deactivateKioskMode(); kioskModeChecker()" class="form-range mt-2" style="width: 100%" />
                 </div>
               </li>
               <li class="dropdown-item">
-                <label for="durationSelect" class="form-label">Zeitraum</label>
-                <select
-                  id="durationSelect"
-                  class="form-select"
-                  [(ngModel)]="selectedDuration"
-                  (ngModelChange)="changeDuration()"
-                >
-                  <option
-                    *ngFor="let duration of durations"
-                    [ngValue]="duration"
-                  >
-                    {{ duration.long }}
-                  </option>
+                <label for="durationSelectUnique" class="form-label">Zeitraum</label>
+                <select id="durationSelectUnique" class="form-select" [(ngModel)]="selectedDuration" (ngModelChange)="changeDuration()">
+                  <option *ngFor="let duration of durations" [ngValue]="duration">{{ duration.long }}</option>
                 </select>
               </li>
             </ul>
@@ -92,21 +55,59 @@
   </div>
 </div>
 
-<!-- Monatsauswahl als Dropdown -->
-<!-- Kombiniertes Monats- und Jahresauswahl-Dropdown -->
-<div class="dropdown-container" *ngIf="showPvData && currentIndex !== -2 && currentIndex !== -3">
-  <div class="month-year-selector">
-    <select class="form-select" [(ngModel)]="selectedMonthYear" (ngModelChange)="selectMonthYearCombo()">
-      <ng-container *ngFor="let year of years">
-        <optgroup [label]="year.toString()">
-          <option *ngFor="let month of months; let i = index" [ngValue]="{ year: year, month: i }">
-            {{ month }} {{ year }}
-          </option>
-        </optgroup>
-      </ng-container>
-    </select>
-  </div>
+<!-- Datumsauswahl nur anzeigen, wenn kein Monat oder Jahr gewählt ist -->
+<div class="dropdown-container d-flex gap-2 mb-3"
+     *ngIf="showPvData && currentIndex !== -2 && currentIndex !== -3 && selectedDuration.short !== '30d' && selectedDuration.short !== '365d'">
+  <!-- Jahr -->
+  <select class="form-select" [(ngModel)]="selectedYear" (change)="changeDuration()">
+    <option *ngFor="let year of years" [value]="year">{{ year }}</option>
+  </select>
+
+  <!-- Monat -->
+  <select class="form-select" [(ngModel)]="selectedMonth" (change)="updateDaysInMonth(); changeDuration()">
+    <option *ngFor="let month of months; let i = index" [value]="i">{{ month }}</option>
+  </select>
+
+  <!-- Tag -->
+  <select class="form-select" [(ngModel)]="selectedDay" (change)="changeDuration()">
+    <option *ngFor="let day of daysInMonth" [value]="day">{{ day }}</option>
+  </select>
 </div>
+
+
+<div *ngIf="selectedDuration.short === '7d' && selectedWeek && selectedWeek.start && selectedWeek.end && showPvData && currentIndex !== -2 && currentIndex !== -3" class="alert alert-info mb-2">
+  Woche {{ selectedWeek.label }} ({{ selectedWeek.start | date:'dd.MM.yyyy' }} - {{ selectedWeek.end | date:'dd.MM.yyyy' }})
+</div>
+
+
+
+
+<!-- Der Rest deines HTML bleibt unverändert (Sidebar + Content) -->
+
+<div class="dropdown-container d-flex gap-2 mb-3" *ngIf="showPvData && currentIndex !== -2 && currentIndex !== -3">
+  <!-- Jahr -->
+  <select class="form-select" [(ngModel)]="selectedYear" (change)="changeDuration()">
+    <option *ngFor="let year of years" [value]="year">{{ year }}</option>
+  </select>
+
+  <!-- Monat -->
+  <select class="form-select" [(ngModel)]="selectedMonth" (change)="changeDuration()">
+    <option *ngFor="let month of months; let i = index" [value]="i">
+      {{ month }}
+    </option>
+  </select>
+
+  <!-- Tag -->
+  <select class="form-select" [(ngModel)]="selectedDay" (change)="changeDuration()">
+    <option *ngFor="let d of [].constructor(31); let day = index" [value]="day + 1">
+      {{ day + 1 }}
+    </option>
+  </select>
+</div>
+
+
+
+
 
 <!-- Restlicher Inhalt (Sidebar und Content) -->
 <div class="d-flex">
