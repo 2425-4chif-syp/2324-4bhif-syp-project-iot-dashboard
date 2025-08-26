@@ -1,8 +1,8 @@
 services:
   frontend:
     build:
-      context: /home/denis/Dokumente/SYP/Fork-github/2324-4bhif-syp-project-iot-dashboard/frontend
-      dockerfile: docker/Dockerfile
+      context: /home/denis/Dokumente/SYP/Fork-github/2324-4bhif-syp-project-iot-dashboard
+      dockerfile: frontend/docker/Dockerfile
     image: leoenergy-kiosk:local
     container_name: leoenergy-kiosk
     ports:
@@ -11,3 +11,4 @@ services:
       - influxdb
       - grafana
       - leoenergy
+

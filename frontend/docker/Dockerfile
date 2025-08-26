@@ -1,4 +1,6 @@
 FROM nginx:stable
 
-COPY ./docker/nginx.conf /etc/nginx/nginx.conf
-COPY ./dist/kiosk/* /usr/share/nginx/html/
+COPY ./frontend/docker/nginx.conf /etc/nginx/conf.d/default.conf
+COPY ./frontend/kiosk/dist/kiosk/browser/ /usr/share/nginx/html/
+
+

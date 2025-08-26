@@ -46,7 +46,7 @@ public class MqttReceiver {
         try {
             var sensorValue = sensorValueMapper.fromJson(msg);
 
-            Log.debugf("Wert empfangen: %s", sensorValue.toString());
+            Log.infof("Wert empfangen: %s", sensorValue.toString());
             insertMeasurement(sensorValue);
 
         } catch (Exception e) {

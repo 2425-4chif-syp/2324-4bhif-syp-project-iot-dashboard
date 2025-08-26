@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+// ...existing code...
+
+import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { Graph } from "../model/Graph";
 import { DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
 import { HttpClient} from "@angular/common/http";
@@ -11,6 +13,10 @@ import {WeatherComponent} from "../weather/weather.component";
 import {RouterLink} from "@angular/router";
 import {SensorboxOverviewComponent} from "../sensorbox-overview/sensorbox-overview.component";
 import { CommonModule} from "@angular/common";
+import { MatDatepickerModule, MatDatepicker } from '@angular/material/datepicker';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatNativeDateModule } from '@angular/material/core';
 
 @Component({
   selector: 'app-graph-overview',
@@ -26,12 +32,74 @@ import { CommonModule} from "@angular/common";
     NgSwitch,
     NgSwitchCase,
     NgSwitchDefault,
-    CommonModule
+    CommonModule,
+    MatDatepickerModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatNativeDateModule
   ],
   templateUrl: './graph-overview.component.html',
   styleUrls: ['./graph-overview.component.css']
 })
-export class GraphOverviewComponent implements OnInit {
+export class GraphOverviewComponent implements OnInit, AfterViewInit {
+  // Optionen für 1-Stunden-Auswahl
+  public hourOptions: number[] = Array.from({ length: 24 }, (_, i) => i);
+  // Vergleichsfunktion für das Dropdown, damit Objekte erkannt werden
+  public compareDays = (a: { day: number, month: number }, b: { day: number, month: number }) => {
+    return a && b && a.day === b.day && a.month === b.month;
+  };
+  // Hilfsmethode für die Anzeige des Monatsnamens im Template
+  public getMonthName(dayObj: { day: number, month: number }): string {
+    return this.months[dayObj.month];
+  }
+  public daysInMonth: number[] = [];
+  public selectedMinute: number = 0;
+  public minuteIntervals: { value: number, label: string }[] = Array.from({ length: 288 }, (_, i) => {
+    const totalMinutes = i * 5;
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+    const label = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+    return { value: totalMinutes, label };
+  });
+
+  // Wird aufgerufen, wenn in der Wochenansicht das Jahr gewechselt wird
+  public onWeekYearChange(): void {
+    this.generateWeeks(this.selectedYear);
+    // Finde die aktuelle Kalenderwoche und setze sie als ausgewählt
+    const today = new Date();
+    const weekIndex = this.availableWeeks.findIndex(w =>
+      today >= w.start && today <= w.end
+    );
+    this.selectedWeek = weekIndex >= 0 ? this.availableWeeks[weekIndex] : this.availableWeeks[0];
+    this.changeDuration();
+  }
+  @ViewChild('picker') picker!: MatDatepicker<Date>;
+  // 4-Stunden-Intervalle: 1–5, 5–9, 9–13, 13–17, 17–21, 21–1
+  public fourHourIntervals: { value: number, label: string }[] = [
+    { value: 1, label: '01:00 – 05:00' },
+    { value: 5, label: '05:00 – 09:00' },
+    { value: 9, label: '09:00 – 13:00' },
+    { value: 13, label: '13:00 – 17:00' },
+    { value: 17, label: '17:00 – 21:00' },
+    { value: 21, label: '21:00 – 01:00' }
+  ];
+  private _selectedHour: number = 1;
+  public get selectedHour(): number {
+    return this._selectedHour;
+  }
+  public set selectedHour(val: number) {
+    this._selectedHour = val;
+    // Dashboard sofort aktualisieren, wenn 4h gewählt ist
+    if (this.selectedDuration.short === '4h') {
+      this.updateGraphLinks();
+    }
+  }
+  ngAfterViewInit(): void {
+    // Wird benötigt, damit ViewChild funktioniert
+  }
+
+  public minDate: Date = new Date(2024, 0, 1); // 1. Januar 2024
+  public maxDate: Date = new Date(2025, 11, 31); // 31. Dezember 2025
 
   public selectedWeek: { label: string; start: Date; end: Date } | null = null;
   public firstDayOfWeek: Date = new Date();
@@ -42,35 +110,72 @@ export class GraphOverviewComponent implements OnInit {
   todayYear = this.today.getFullYear();
 
   public graphs: Graph[] = [];
+
   public currentIndex = -1;
   public currentGraph: Graph | null = null;
 
   public isMonthSelected: boolean = false;
+  // Dashboard-Einstellungen
   public kioskMode: boolean = true;
   public interval: number = 15;
-  subscription!: Subscription;
+  public subscription!: Subscription;
 
+  public showDashboardSettings: boolean = false;
+
+  public toggleDashboardSettings(): void {
+    this.showDashboardSettings = !this.showDashboardSettings;
+  }
   public showPvData: boolean = true;
   public years: number[] = [2024, 2025];
   public selectedYear: number = new Date().getFullYear();
   public selectedMonth: number = new Date().getMonth();
-  public selectedDay: number = new Date().getDate();
-  public daysInMonth: number[] = [];
+  public selectedDayObj: { day: number, month: number } = { day: new Date().getDate(), month: new Date().getMonth() };
+  public daysInYear: { day: number, month: number }[] = [];
 
   public durations: Duration[] = [
-    new Duration("5m", "5 minutes"),
-    new Duration("1h", "1 hour"),
-    new Duration("4h", "4 hours"),
-    new Duration("1d", "1 day"),
-    new Duration("2d", "2 days"),
-    new Duration("7d", "1 week"),
-    new Duration("30d", "1 month"),
-    new Duration("365d", "1 year")
+    new Duration("5m", "5 Minuten", 5),
+    new Duration("1h", "1 Stunde", 60),
+    new Duration("4h", "4 Stunden", 240),
+    new Duration("1d", "1 Tag", 1440),
+    new Duration("2d", "2 Tage", 2880),
+    new Duration("7d", "1 Woche", 10080),
+    new Duration("30d", "1 Monat", 43200),
+    new Duration("365d", "1 Jahr",  525600)
   ];
   public selectedDuration: Duration = this.durations[3];
 
+  // yearSelect für das Template (Array von Objekten mit Eigenschaft long)
+  public yearSelect = [
+    { long: 2024 },
+    { long: 2025 }
+  ];
+
   public visible: boolean = false;
-  public selectedDateString: string = '';
+  public selectedDateString: Date = new Date();
+
+  // Wird vom Material Datepicker aufgerufen
+  public onMaterialDateChange(event: any): void {
+    const date: Date = event.value || event;
+    if (date instanceof Date && !isNaN(date.getTime())) {
+      this.selectedYear = date.getFullYear();
+      this.selectedMonth = date.getMonth();
+      this.selectedDayObj = { day: date.getDate(), month: date.getMonth() };
+      this.selectedDateString = date;
+
+      // Prüfe, ob nur das Jahr gewählt wurde (Monat = Januar, Tag = 1)
+      if (date.getDate() === 1 && date.getMonth() === 0 && event?.event?.target?.classList?.contains('mat-calendar-body-cell-content')) {
+        // Jahresansicht aktivieren
+        this.selectedDuration = this.durations.find(d => d.short === '365d') || this.selectedDuration;
+        setTimeout(() => this.picker.close(), 0);
+      } else if (date.getDate() === 1 && event?.event?.target?.classList?.contains('mat-calendar-body-cell-content')) {
+        // Monatsansicht aktivieren
+        this.selectedDuration = this.durations.find(d => d.short === '30d') || this.selectedDuration;
+        setTimeout(() => this.picker.close(), 0);
+      }
+
+      this.updateGraphLinks();
+    }
+  }
   public months: string[] = [
     "Januar", "Februar", "März", "April", "Mai", "Juni",
     "Juli", "August", "September", "Oktober", "November", "Dezember"
@@ -85,7 +190,10 @@ export class GraphOverviewComponent implements OnInit {
   constructor(public sanitizer: DomSanitizer, public http: HttpClient) { }
 
   ngOnInit(): void {
-    this.updateDaysInMonth();
+    this.updateDaysInYear();
+    // Set default selectedDayObj to today after daysInYear is initialized
+    const today = new Date();
+    this.selectedDayObj = { day: today.getDate(), month: today.getMonth() };
     this.generateWeeks(this.selectedYear);
 
     this.http.get<Graph[]>('assets/data/graph-data.json').subscribe((data) => {
@@ -97,14 +205,19 @@ export class GraphOverviewComponent implements OnInit {
     this.kioskModeChecker();
   }
 
-  public updateDaysInMonth(): void {
-    const numDays = new Date(this.selectedYear, this.selectedMonth + 1, 0).getDate();
-    this.daysInMonth = Array.from({ length: numDays }, (_, i) => i + 1);
+  public updateDaysInYear(): void {
+    this.daysInYear = [];
+    for (let m = 0; m < 12; m++) {
+      const numDays = new Date(this.selectedYear, m + 1, 0).getDate();
+      for (let d = 1; d <= numDays; d++) {
+        this.daysInYear.push({ day: d, month: m });
+      }
+    }
   }
 
   public onDateChange(): void {
     this.isMonthSelected = false;
-    this.selectedDuration = new Duration("1d", "1 day");
+    this.selectedDuration = new Duration("1d", "1 day", 1440);
     this.updateGraphLinks();
   }
 
@@ -173,45 +286,85 @@ export class GraphOverviewComponent implements OnInit {
   }
 
   private updateGraphLinks(): void {
-    let from: number;
-    let to: number;
-
-    switch (this.selectedRangeType) {
-      case 'day':
-        if (!this.selectedDay || this.selectedMonth === undefined || !this.selectedYear) return;
-        from = new Date(this.selectedYear, this.selectedMonth, this.selectedDay, 0, 0, 0).getTime();
-        to = new Date(this.selectedYear, this.selectedMonth, this.selectedDay, 23, 59, 59, 999).getTime();
-        break;
-
-      case 'week':
-        if (!this.selectedWeek?.start || !this.selectedWeek?.end) return;
-        from = new Date(this.selectedWeek.start).getTime();
-        to = new Date(this.selectedWeek.end).getTime();
-        break;
-
-      case 'month':
-        if (this.selectedMonth === undefined || !this.selectedYear) return;
-        from = new Date(this.selectedYear, this.selectedMonth, 1).getTime();
-        // Letzter Tag des Monats, Uhrzeit: 23:59:59.999
-        to = new Date(this.selectedYear, this.selectedMonth + 1, 0, 23, 59, 59, 999).getTime();
-        break;
-
-      case 'year':
-        if (!this.selectedYear) return;
-        from = new Date(this.selectedYear, 0, 1).getTime();
-        to = new Date(this.selectedYear, 11, 31, 23, 59, 59, 999).getTime();
-        break;
-
-      default:
-        console.warn("Unbekannter Zeitraumtyp:", this.selectedRangeType);
-        return;
+    let from: Date;
+    let to: Date;
+    if (this.selectedDuration.short === '1h') {
+      // Stundenansicht
+      const date = new Date(this.selectedDateString);
+      from = new Date(date.getFullYear(), date.getMonth(), date.getDate(), this.selectedHour, 0, 0, 0);
+      to = new Date(from.getTime() + 60 * 60 * 1000); // 1 Stunde
+    } else if (this.selectedDuration.short === '4h') {
+      // 4-Stunden-Ansicht mit festen Intervallen
+      const date = new Date(this.selectedDateString);
+      const interval = this.fourHourIntervals.find(i => i.value === this.selectedHour);
+      const startHour = interval ? interval.value : 1;
+      from = new Date(date.getFullYear(), date.getMonth(), date.getDate(), startHour, 0, 0, 0);
+      if (startHour === 21) {
+        // 21–01:00, Endzeit ist am nächsten Tag 01:00
+        // from: 21:00 am gewählten Tag, to: 01:00 am Folgetag
+        const nextDay = new Date(date);
+        nextDay.setDate(date.getDate() + 1);
+        to = new Date(nextDay.getFullYear(), nextDay.getMonth(), nextDay.getDate(), 1, 0, 0, 0);
+      } else {
+        to = new Date(date.getFullYear(), date.getMonth(), date.getDate(), startHour + 4, 0, 0, 0);
+      }
+    } else if (this.selectedDuration.short === '7d' && this.selectedWeek) {
+      // Wochenansicht: von Wochenstart bis Wochenende
+      from = new Date(this.selectedWeek.start);
+      to = new Date(this.selectedWeek.end);
+      // Endzeit auf 23:59:59.999 setzen
+      to.setHours(23, 59, 59, 999);
+    } else if (this.selectedDuration.short === '5m') {
+      // 5-Minuten-Ansicht
+      const hour = Math.floor(this.selectedMinute / 60);
+      const minute = this.selectedMinute % 60;
+      from = new Date(this.selectedYear, this.selectedMonth, this.selectedDayObj.day, hour, minute, 0, 0);
+      to = new Date(from.getTime() + 5 * 60 * 1000); // 5 Minuten
+    } else if (this.selectedDuration.short === '2d') {
+      from = new Date(this.selectedYear, this.selectedDayObj.month, this.selectedDayObj.day, 0, 0, 0);
+      to = new Date(this.selectedYear, this.selectedDayObj.month, this.selectedDayObj.day + 1, 23, 59, 59, 999);
+    } else {
+      from = new Date(this.selectedYear, this.selectedMonth, this.selectedDayObj.day, 0, 0, 0);
+      to = new Date(from);
+      to.setTime(to.getTime() + this.selectedDuration.duration * 60 * 1000);
     }
+    // switch (this.selectedRangeType) {
+    //   case 'day':
+    //     if (!this.selectedDay || this.selectedMonth === undefined || !this.selectedYear) return;
+    //     from = new Date(this.selectedYear, this.selectedMonth, this.selectedDay, 0, 0, 0).getTime();
+    //     to = new Date(this.selectedYear, this.selectedMonth, this.selectedDay, 23, 59, 59, 999).getTime();
+    //     break;
+
+    //   case 'week':
+    //     if (!this.selectedWeek?.start || !this.selectedWeek?.end) return;
+    //     from = new Date(this.selectedWeek.start).getTime();
+    //     to = new Date(this.selectedWeek.end).getTime();
+    //     break;
+
+    //   case 'month':
+    //     if (this.selectedMonth === undefined || !this.selectedYear) return;
+    //     from = new Date(this.selectedYear, this.selectedMonth, 1).getTime();
+    //     // Letzter Tag des Monats, Uhrzeit: 23:59:59.999
+    //     to = new Date(this.selectedYear, this.selectedMonth + 1, 0, 23, 59, 59, 999).getTime();
+    //     break;
+
+    //   case 'year':
+    //     if (!this.selectedYear) return;
+    //     from = new Date(this.selectedYear, 0, 1).getTime();
+    //     to = new Date(this.selectedYear, 11, 31, 23, 59, 59, 999).getTime();
+    //     break;
+
+    //   default:
+    //     console.warn("Unbekannter Zeitraumtyp:", this.selectedRangeType);
+    //     return;
+    // }
 
     // Links aktualisieren
     this.graphs.forEach(graph => {
+      // Ersetze from=... und to=... mit UNIX-Millisekunden, egal ob now-1d/now oder Zeitstempel
       graph.iFrameLink = graph.iFrameLink
-        .replace(/from=[^&]+/, `from=${from}`)
-        .replace(/to=[^&]+/, `to=${to}`);
+        .replace(/from=([^&]*)/, `from=${from.getTime()}`)
+        .replace(/to=([^&]*)/, `to=${to.getTime()}`);
     });
 
     this.updateCurrentGraph();
@@ -258,26 +411,19 @@ export class GraphOverviewComponent implements OnInit {
 
     if (this.selectedDuration.short === '30d') {
       this.isMonthSelected = true;
-
       this.updateGraphLinks();
     }
-    else if (this.selectedDuration.short === '7d')
-    {
-      const date = new Date(this.selectedYear, this.selectedMonth, this.selectedDay);
-      const dayOfWeek = date.getDay(); // 0 (So) bis 6 (Sa)
-      const diffToMonday = (dayOfWeek + 6) % 7;
-
-      this.firstDayOfWeek = new Date(date);
-      this.firstDayOfWeek.setDate(date.getDate() - diffToMonday);
-
-      this.lastDayOfWeek = new Date(this.firstDayOfWeek);
-      this.lastDayOfWeek.setDate(this.firstDayOfWeek.getDate() + 6);
-
-      this.selectedWeek = {
-        label: `KW ${this.getISOWeekNumber(this.firstDayOfWeek)}`,
-        start: this.firstDayOfWeek,
-        end: this.lastDayOfWeek
-      };
+    else if (this.selectedDuration.short === '7d') {
+      // Wenn selectedWeek nicht gesetzt, setze aktuelle Kalenderwoche
+      if (!this.selectedWeek) {
+        const today = new Date();
+        const weekIndex = this.availableWeeks.findIndex(w =>
+          today >= w.start && today <= w.end
+        );
+        this.selectedWeek = weekIndex >= 0 ? this.availableWeeks[weekIndex] : this.availableWeeks[0];
+      }
+      this.firstDayOfWeek = new Date(this.selectedWeek.start);
+      this.lastDayOfWeek = new Date(this.selectedWeek.end);
     }
 
     else {
@@ -300,7 +446,7 @@ export class GraphOverviewComponent implements OnInit {
   }
 
   private calculateFixedDurationRange(): { from: number, to: number } {
-    const selectedDate = new Date(this.selectedYear, this.selectedMonth, this.selectedDay, 0, 0, 0, 0);
+    const selectedDate = new Date(this.selectedYear, this.selectedMonth, this.selectedDayObj.day, 0, 0, 0, 0);
 
     let durationMs = 0;
     switch (this.selectedDuration.short) {
@@ -364,17 +510,27 @@ export class GraphOverviewComponent implements OnInit {
 
   private generateWeeks(year: number): void {
     this.availableWeeks = [];
-    let start = new Date(year, 0, 1);
-
-    while (start.getFullYear() === year) {
+    // ISO 8601: Die erste Woche eines Jahres ist diejenige, die den ersten Donnerstag enthält
+    // Finde den ersten Montag der ersten ISO-Woche
+    let jan4 = new Date(year, 0, 4); // 4. Januar
+    let firstMonday = new Date(jan4);
+    firstMonday.setDate(jan4.getDate() - ((jan4.getDay() + 6) % 7)); // Rückwärts zum Montag
+    // Generiere Wochen von Montag bis Sonntag, solange der Montag noch im Jahr liegt
+    let start = new Date(firstMonday);
+    while (start.getFullYear() === year || (start.getFullYear() === year - 1 && start.getMonth() === 11)) {
       const end = new Date(start);
       end.setDate(end.getDate() + 6);
-      const label = `${start.toLocaleDateString()} - ${end.toLocaleDateString()}`;
-      this.availableWeeks.push({ start: new Date(start), end, label });
+      // Nur Wochen, die mindestens teilweise im aktuellen Jahr liegen, aufnehmen
+      if (end.getFullYear() === year || start.getFullYear() === year) {
+        const label = `${start.getDate()}.${start.getMonth()+1}.${start.getFullYear()} - ${end.getDate()}.${end.getMonth()+1}.${end.getFullYear()}`;
+        this.availableWeeks.push({ start: new Date(start), end: new Date(end), label });
+      }
       start.setDate(start.getDate() + 7);
     }
-
-    this.selectedWeek = this.availableWeeks[0];
+    // Default: aktuelle Woche auswählen
+    const today = new Date();
+    const weekIndex = this.availableWeeks.findIndex(w => today >= w.start && today <= w.end);
+    this.selectedWeek = weekIndex >= 0 ? this.availableWeeks[weekIndex] : this.availableWeeks[0];
   }
 
 

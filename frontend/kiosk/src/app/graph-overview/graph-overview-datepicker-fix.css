@@ -1,0 +1,27 @@
+/* Sichtbarkeit und Kontrast für Angular Material Datepicker erzwingen */
+
+mat-form-field, .mat-form-field {
+  background: #fff !important;
+  color: #222 !important;
+  min-width: 220px;
+  z-index: 10;
+}
+
+.mat-form-field-appearance-outline .mat-form-field-outline {
+  color: #1976d2 !important;
+}
+
+.mat-input-element, .mat-datepicker-toggle {
+  color: #222 !important;
+}
+
+.mat-calendar {
+  background: #fff !important;
+  color: #222 !important;
+  z-index: 1000 !important;
+}
+
+/* Optional: Abstand nach unten */
+mat-form-field {
+  margin-bottom: 1rem;
+}

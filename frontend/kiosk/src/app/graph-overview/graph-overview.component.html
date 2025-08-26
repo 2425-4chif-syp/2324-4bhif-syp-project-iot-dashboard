@@ -1,115 +1,3 @@
-<!-- Container für Titel, Einstellungen und Wetterkomponente auf derselben Höhe -->
-<div class="d-flex justify-content-between align-items-center mb-4">
-  <div class="header-center">
-    <h1 *ngIf="currentGraph?.title">{{ currentGraph?.title }}</h1>
-    <h1 *ngIf="currentIndex === -1" class="text-center"></h1>
-    <h1 *ngIf="currentIndex === -2" class="text-center">Wetter</h1>
-    <h1 *ngIf="currentIndex === -3" class="text-center">
-      <img src="assets/images/live-icon.png" alt="Live-Icon" class="live-icon me-2">
-      Sensorboxen
-    </h1>
-  </div>
-
-  <div class="settings-section ms-auto">
-    <nav class="navbar navbar-expand-lg navbar-light">
-      <div class="container-fluid justify-content-end">
-        <ul class="navbar-nav">
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle settings-dropdown" href="#" id="settingsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              <i class="fas fa-cog"></i>
-            </a>
-            <ul class="dropdown-menu dropdown-menu-end settings-menu" aria-labelledby="settingsDropdown">
-              <li class="dropdown-header custom-dropdown-header">Dashboard-Einstellungen</li>
-              <li class="dropdown-item text-muted">
-                <strong>Ausgewählt:</strong>
-                <ng-container [ngSwitch]="selectedDuration.short">
-                  <span *ngSwitchCase="'7d'">KW {{ selectedWeek }}, {{ selectedYear }}</span>
-                  <span *ngSwitchCase="'30d'">{{ months[selectedMonth] }} {{ selectedYear }}</span>
-                  <span *ngSwitchCase="'365d'">{{ selectedYear }}</span>
-                  <span *ngSwitchDefault>{{ selectedDay }}. {{ months[selectedMonth] }} {{ selectedYear }}</span>
-                </ng-container>
-
-              </li>
-              <li><hr class="dropdown-divider"></li>
-              <li class="dropdown-item d-flex justify-content-between align-items-center">
-                <label class="form-check-label mb-0 me-2">Kiosk-Mode</label>
-                <input type="checkbox" [(ngModel)]="kioskMode" (change)="kioskModeChecker()" class="form-check-input" />
-              </li>
-              <li class="dropdown-item">
-                <label for="intervalRangeUnique" class="form-label">Intervall: {{ interval }} Sekunden</label>
-                <div class="d-flex align-items-center">
-                  <input id="intervalRangeUnique" type="range" min="5" max="60" [(ngModel)]="interval" (change)="deactivateKioskMode(); kioskModeChecker()" class="form-range mt-2" style="width: 100%" />
-                </div>
-              </li>
-              <li class="dropdown-item">
-                <label for="durationSelectUnique" class="form-label">Zeitraum</label>
-                <select id="durationSelectUnique" class="form-select" [(ngModel)]="selectedDuration" (ngModelChange)="changeDuration()">
-                  <option *ngFor="let duration of durations" [ngValue]="duration">{{ duration.long }}</option>
-                </select>
-              </li>
-            </ul>
-          </li>
-        </ul>
-      </div>
-    </nav>
-  </div>
-</div>
-
-<!-- Datumsauswahl nur anzeigen, wenn kein Monat oder Jahr gewählt ist -->
-<div class="dropdown-container d-flex gap-2 mb-3"
-     *ngIf="showPvData && currentIndex !== -2 && currentIndex !== -3 && selectedDuration.short !== '30d' && selectedDuration.short !== '365d'">
-  <!-- Jahr -->
-  <select class="form-select" [(ngModel)]="selectedYear" (change)="changeDuration()">
-    <option *ngFor="let year of years" [value]="year">{{ year }}</option>
-  </select>
-
-  <!-- Monat -->
-  <select class="form-select" [(ngModel)]="selectedMonth" (change)="updateDaysInMonth(); changeDuration()">
-    <option *ngFor="let month of months; let i = index" [value]="i">{{ month }}</option>
-  </select>
-
-  <!-- Tag -->
-  <select class="form-select" [(ngModel)]="selectedDay" (change)="changeDuration()">
-    <option *ngFor="let day of daysInMonth" [value]="day">{{ day }}</option>
-  </select>
-</div>
-
-
-<div *ngIf="selectedDuration.short === '7d' && selectedWeek && selectedWeek.start && selectedWeek.end && showPvData && currentIndex !== -2 && currentIndex !== -3" class="alert alert-info mb-2">
-  Woche {{ selectedWeek.label }} ({{ selectedWeek.start | date:'dd.MM.yyyy' }} - {{ selectedWeek.end | date:'dd.MM.yyyy' }})
-</div>
-
-
-
-
-<!-- Der Rest deines HTML bleibt unverändert (Sidebar + Content) -->
-
-<div class="dropdown-container d-flex gap-2 mb-3" *ngIf="showPvData && currentIndex !== -2 && currentIndex !== -3">
-  <!-- Jahr -->
-  <select class="form-select" [(ngModel)]="selectedYear" (change)="changeDuration()">
-    <option *ngFor="let year of years" [value]="year">{{ year }}</option>
-  </select>
-
-  <!-- Monat -->
-  <select class="form-select" [(ngModel)]="selectedMonth" (change)="changeDuration()">
-    <option *ngFor="let month of months; let i = index" [value]="i">
-      {{ month }}
-    </option>
-  </select>
-
-  <!-- Tag -->
-  <select class="form-select" [(ngModel)]="selectedDay" (change)="changeDuration()">
-    <option *ngFor="let d of [].constructor(31); let day = index" [value]="day + 1">
-      {{ day + 1 }}
-    </option>
-  </select>
-</div>
-
-
-
-
-
-<!-- Restlicher Inhalt (Sidebar und Content) -->
 <div class="d-flex">
   <!-- Sidebar -->
   <div class="sidebar" style="height: 100vh; overflow-y: scroll; -ms-overflow-style: none; scrollbar-width: none; position: fixed; top: 0; left: 0; width: 290px; background-color: #f8f9fa;">
@@ -149,7 +37,6 @@
         </div>
       </div>
     </div>
-
 
     <!-- Dynamische Sidebar-Elemente -->
     <ul class="sidebar-nav">
@@ -203,9 +90,136 @@
     </ul>
   </div>
 
-
   <!-- Hauptinhalt -->
-  <div class="content">
+  <div class="content" style="margin-left: 290px;">
+    <!-- Dashboard-Einstellungen Panel (floating card) -->
+    <div *ngIf="showDashboardSettings" class="dashboard-settings-card" style="position: absolute; top: 24px; right: 32px; z-index: 10; min-width: 270px; box-shadow: 0 4px 24px rgba(0,0,0,0.08); border-radius: 16px; background: #fff;">
+      <div style="background: linear-gradient(90deg, #ff8c5a 0%, #ffb47a 100%); border-radius: 16px 16px 0 0; padding: 12px 20px; color: #fff; font-weight: 600; font-size: 1.1rem;">Dashboard-Einstellungen</div>
+      <div style="padding: 18px 20px 12px 20px;">
+        <div style="font-size: 0.98rem; margin-bottom: 8px; color: #444;">
+          <span style="font-weight: 600;">Ausgewählt:</span>
+          <span>{{ selectedDayObj.day }}. {{ months[selectedDayObj.month] }} {{ selectedYear }}</span>
+        </div>
+        <div class="form-check form-switch mb-3">
+          <label class="form-check-label" for="kioskModeSwitch" style="font-weight: 500;">Kiosk-Mode</label>
+          <input class="form-check-input" type="checkbox" id="kioskModeSwitch" [(ngModel)]="kioskMode" (change)="kioskModeChecker()">
+        </div>
+        <div class="mb-3">
+          <label for="intervalSlider" style="font-weight: 500;">Intervall: {{ interval }} Sekunden</label>
+          <input type="range" class="form-range" id="intervalSlider" min="5" max="60" step="1" [(ngModel)]="interval" (change)="kioskModeChecker()">
+        </div>
+        <div>
+          <label for="zeitraumSelect" style="font-weight: 500;">Zeitraum</label>
+          <select id="zeitraumSelect" class="form-select mt-1" [(ngModel)]="selectedDuration" (change)="changeDuration()">
+            <option *ngFor="let duration of durations" [ngValue]="duration">{{ duration.long }}</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <!-- Nur eine Header-Section für die Titel und das Zahnrad -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div class="d-flex flex-column align-items-start">
+        <div class="header-center">
+          <h1 *ngIf="currentGraph?.title" class="content-title">{{ currentGraph?.title }}</h1>
+          <h1 *ngIf="currentIndex === -2" class="content-title">Wetter</h1>
+          <h1 *ngIf="currentIndex === -3" class="content-title">
+            <img src="assets/images/live-icon.png" alt="Live-Icon" class="live-icon me-2">
+            Sensorboxen
+          </h1>
+        </div>
+      </div>
+      <!-- Zahnrad-Icon zum Öffnen der Dashboard-Einstellungen -->
+      <div class="settings-section ms-auto">
+        <button (click)="toggleDashboardSettings()" class="btn btn-link p-0" style="font-size: 2rem; color: #ff8c5a;">
+          <i class="fas fa-cog"></i>
+        </button>
+      </div>
+    </div>
+    <!-- Dynamische Auswahl je nach Zeitraum -->
+    <div style="margin: 24px 0 24px 0;">
+      <!-- Tag-Auswahl -->
+      <mat-form-field appearance="outline" *ngIf="selectedDuration.short === '1d' || selectedDuration.short === '4h' || selectedDuration.short === '5m' || selectedDuration.short === '1h'">
+        <mat-label>Choose a date</mat-label>
+        <input matInput [matDatepicker]="picker" [(ngModel)]="selectedDateString" (dateChange)="onMaterialDateChange($event)" placeholder="TT.MM.JJJJ"
+          [min]="minDate" [max]="maxDate">
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+      <!-- 2-Tage-Dropdown unter dem Datepicker anzeigen, wenn 2d ausgewählt ist -->
+      <div *ngIf="selectedDuration.short === '2d'" class="two-day-selector" style="margin-top: 10px;">
+        <label for="twoDaySelect" class="two-day-label">Starttag auswählen:</label>
+        <select id="twoDaySelect" [(ngModel)]="selectedDayObj" class="two-day-dropdown" (change)="changeDuration()" [compareWith]="compareDays">
+          <option *ngFor="let d of daysInYear" [ngValue]="d">{{ d.day }}. {{ months[d.month] }}</option>
+        </select>
+        <div class="current-two-day-info">
+          Gewählter Zeitraum: <strong>{{ selectedDayObj.day }}. {{ getMonthName(selectedDayObj) }} – {{ selectedDayObj.day + 1 }}. {{ getMonthName({ day: selectedDayObj.day + 1, month: selectedDayObj.month }) }}</strong>
+        </div>
+      </div>
+      <!-- 4-Stunden-Dropdown unter dem Datepicker anzeigen, wenn 4h ausgewählt ist -->
+<!-- Nur ein Dropdown für 4h anzeigen, doppeltes entfernen -->
+<div *ngIf="selectedDuration.short === '1h'" class="one-hour-selector" style="margin-top: 10px;">
+  <label for="oneHourSelect" class="one-hour-label">Stunde auswählen:</label>
+  <select id="oneHourSelect" [(ngModel)]="selectedHour" class="one-hour-dropdown" (change)="changeDuration()">
+    <option *ngFor="let h of hourOptions" [value]="h">
+      {{ h.toString().padStart(2, '0') }}:00 – {{ ((h + 1) % 24).toString().padStart(2, '0') }}:00
+    </option>
+  </select>
+</div>
+      <!-- 5-Minuten-Dropdown nur anzeigen, wenn 5m ausgewählt ist -->
+      <div *ngIf="selectedDuration.short === '5m'" class="minute-selector">
+        <label for="minuteSelect" class="minute-label">Wähle 5-Minuten-Intervall:</label>
+        <select id="minuteSelect" [(ngModel)]="selectedMinute" class="minute-dropdown">
+          <option *ngFor="let minute of minuteIntervals" [ngValue]="minute.value">
+            {{ minute.label }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Monat-Auswahl -->
+      <div class="d-flex" *ngIf="selectedDuration.short === '30d'">
+        <select id="yearSelect" class="form-select ms-2" [(ngModel)]="selectedYear" (change)="changeDuration()">
+          <option *ngFor="let year of yearSelect" [ngValue]="year.long">{{ year.long }}</option>
+        </select>
+        <select id="monthSelect" class="form-select ms-2" [(ngModel)]="selectedMonth" (change)="changeDuration()">
+          <option *ngFor="let month of months; let i = index" [ngValue]="i">{{ month }}</option>
+        </select>
+      </div>
+
+      <!-- Wochen-Auswahl -->
+      <div class="d-flex" *ngIf="selectedDuration.short === '7d'">
+        <select id="yearSelect" class="form-select ms-2" [(ngModel)]="selectedYear" (change)="onWeekYearChange()">
+          <option *ngFor="let year of yearSelect" [ngValue]="year.long">{{ year.long }}</option>
+        </select>
+        <select id="weekSelect" class="form-select ms-2" [(ngModel)]="selectedWeek" (change)="changeDuration()">
+          <option *ngFor="let week of availableWeeks" [ngValue]="week">{{ week.label }}</option>
+        </select>
+      </div>
+
+      <!-- Jahres-Auswahl -->
+      <div class="d-flex" *ngIf="selectedDuration.short === '365d'">
+        <select id="yearSelect" class="form-select ms-2" [(ngModel)]="selectedYear" (change)="changeDuration()">
+          <option *ngFor="let year of yearSelect" [ngValue]="year.long">{{ year.long }}</option>
+        </select>
+      </div>
+
+      <!-- Stunden-Dropdown für 1-Stunden-Ansicht -->
+      <div *ngIf="selectedDuration.short === '1h'" style="margin-top: 8px;">
+        <label for="hourSelect" style="margin-right: 8px;">Stunde auswählen:</label>
+        <select id="hourSelect" [(ngModel)]="selectedHour" class="hour-dropdown" (change)="changeDuration()">
+          <option *ngFor="let h of hourOptions" [value]="h">{{ h.toString().padStart(2, '0') }}:00 – {{ ((h + 1) % 24).toString().padStart(2, '0') }}:00</option>
+        </select>
+      </div>
+
+      <!-- 4-Stunden-Dropdown für 4-Stunden-Ansicht -->
+      <div *ngIf="selectedDuration.short === '4h'" style="margin-top: 8px;">
+        <label for="fourHourSelect" style="margin-right: 8px;">Zeitraum auswählen:</label>
+        <select id="fourHourSelect" [(ngModel)]="selectedHour" class="four-hour-dropdown" (change)="changeDuration()">
+          <option *ngFor="let interval of fourHourIntervals" [value]="interval.value">
+            {{ interval.label }}
+          </option>
+        </select>
+      </div>
+    </div>
     <div class="content-wrapper">
       <!-- Wetteranzeige -->
       <div *ngIf="currentIndex === -2" class="weather-section">
@@ -237,7 +251,7 @@
                   *ngFor="let graph of graphs"
                   class="col-md-6 graph-item mb-4"
                 >
-                  <h3>{{ graph.title }}</h3>
+                  <!-- Entferne den doppelten Titel, da Sidebar die Namen zeigt -->
                   <div class="iframe-container">
                     <div class="iframe-background"></div>
                     <iframe
@@ -247,11 +261,11 @@
                   </div>
                 </div>
               </div>
-            </div>
 
-            <!-- Keine Graphen verfügbar -->
-            <div *ngIf="graphs.length === 0" class="no-graphs">
-              <p>Keine Graphen verfügbar.</p>
+              <!-- Keine Graphen verfügbar -->
+              <div *ngIf="graphs.length === 0" class="no-graphs">
+                <p>Keine Graphen verfügbar.</p>
+              </div>
             </div>
           </div>
         </div>
