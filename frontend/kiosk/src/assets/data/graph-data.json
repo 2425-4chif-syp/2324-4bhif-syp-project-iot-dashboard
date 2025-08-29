@@ -3,42 +3,12 @@
     "name": "Serverraum Verbrauch",
     "description": "",
     "title": "Serverraum Verbrauch",
-    "iFrameLink": "https://vm23.htl-leonding.ac.at/grafana/d-solo/ce76ytt30l3b4b/new-dashboard?orgId=1&refresh=10s&from=now-1d&to=now&timezone=browser&panelId=6&__feature.dashboardSceneSolo&theme=light&css=.panel-container,.graph-panel{background-color:white !important;}.flot-background{fill:white !important;}"
+    "iFrameLink": "https://vm67.htl-leonding.ac.at/grafana/d-solo/dewae3ijssb9cc/test-dashboard?orgId=1&refresh=10&from=now-1d&to=now&timezone=browser&showCategory=Panel%20options&panelId=1&__feature.dashboardSceneSolo&theme=light&css=.panel-container,.graph-panel{background-color:white !important;}.flot-background{fill:white !important;}"
   },
   {
     "name": "Energie Gesamt Verbrauch",
     "description": "",
     "title": "Energie Gesamt Verbrauch",
-    "iFrameLink": "https://vm23.htl-leonding.ac.at/grafana/d-solo/ce76ytt30l3b4b/new-dashboard?orgId=1&refresh=10s&from=now-1d&to=now&timezone=browser&panelId=5&__feature.dashboardSceneSolo&theme=light&css=.panel-container,.graph-panel{background-color:white !important;}.flot-background{fill:white !important;}"
-  },
-  {
-    "name": "PV-Energie Produktion",
-    "description": "",
-    "title": "PV-Energie Produktion",
-    "iFrameLink": "https://vm23.htl-leonding.ac.at/grafana/d-solo/ce76ytt30l3b4b/new-dashboard?orgId=1&refresh=10s&from=now-1d&to=now&timezone=browser&panelId=4&__feature.dashboardSceneSolo&theme=light&css=.panel-container,.graph-panel{background-color:white !important;}.flot-background{fill:white !important;}"
-  },
-  {
-    "name": "Energie Diagramm",
-    "description": "",
-    "title": "Energie Diagramm",
-    "iFrameLink": "https://vm23.htl-leonding.ac.at/grafana/d-solo/ce76ytt30l3b4b/new-dashboard?orgId=1&refresh=10&from=now-1d&to=now&timezone=browser&showCategory=Panel%20options&panelId=7&__feature.dashboardSceneSolo&theme=light&css=.panel-container,.graph-panel{background-color:white !important;}.flot-background{fill:white !important;}"
-  },
-  {
-    "name": "Energie Gesamt",
-    "description": "",
-    "title": "Energie Gesamt",
-    "iFrameLink": "https://vm23.htl-leonding.ac.at/grafana/d-solo/ce76ytt30l3b4b/new-dashboard?orgId=1&refresh=10s&from=now-1d&to=now&timezone=browser&panelId=2&__feature.dashboardSceneSolo&theme=light&css=.panel-container,.graph-panel{background-color:white !important;}.flot-background{fill:white !important;}"
-  },
-  {
-    "name": "PV-Energie",
-    "description": "",
-    "title": "PV-Energie",
-    "iFrameLink": "https://vm23.htl-leonding.ac.at/grafana/d-solo/ce76ytt30l3b4b/new-dashboard?orgId=1&refresh=10s&from=now-1d&to=now&timezone=browser&panelId=1&__feature.dashboardSceneSolo&theme=light&css=.panel-container,.graph-panel{background-color:white !important;}.flot-background{fill:white !important;}"
-  },
-  {
-    "name": "Consumption/Production",
-    "description": "",
-    "title": "Consumption/Production",
-    "iFrameLink": "https://vm23.htl-leonding.ac.at/grafana/d-solo/fe7h182kc4um8f/overview-consumption-production?orgId=1&refresh=10s&from=now-1d&to=now&timezone=browser&panelId=1&__feature.dashboardSceneSolo&theme=light&css=.panel-container,.graph-panel{background-color:white !important;}.flot-background{fill:white !important;}"
+    "iFrameLink": "https://vm67.htl-leonding.ac.at/grafana/d-solo/dewae3ijssb9cc/test-dashboard?orgId=1&refresh=10s&from=now-1d&to=now&timezone=browser&panelId=2&__feature.dashboardSceneSolo&theme=light&css=.panel-container,.graph-panel{background-color:white !important;}.flot-background{fill:white !important;}"
   }
 ]

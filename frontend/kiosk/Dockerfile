@@ -1,5 +1,7 @@
-FROM nginx:alpine
+FROM nginx:stable
 
-RUN rm -rf /usr/share/nginx/html/*
+# Der Pfad ist relativ zum Build-Kontext (Projektverzeichnis)
+COPY docker/nginx.conf /etc/nginx/nginx.conf
 
-COPY ./frontend/kiosk/dist/kiosk/browser/ /usr/share/nginx/html/
+# Angular-Build-Output – muss vorhanden sein!
+COPY kiosk/dist/kiosk/browser/ /usr/share/nginx/html/

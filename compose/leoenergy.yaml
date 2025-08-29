@@ -3,6 +3,8 @@ services:
     image: ghcr.io/2324-4bhif-syp/2324-4bhif-syp-project-iot-dashboard/leoenergy:latest
     container_name: leoenergy-backend
     restart: unless-stopped
+    environment:
+      - QUARKUS_LOG_LEVEL=DEBUG
     ports:
       - "8080:8080"
     depends_on:

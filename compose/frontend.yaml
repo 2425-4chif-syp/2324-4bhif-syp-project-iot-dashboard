@@ -1,14 +1,15 @@
 services:
   frontend:
     build:
-      context: /home/denis/Dokumente/SYP/Fork-github/2324-4bhif-syp-project-iot-dashboard
-      dockerfile: frontend/docker/Dockerfile
+      context: ../frontend
+      dockerfile: docker/Dockerfile
     image: leoenergy-kiosk:local
     container_name: leoenergy-kiosk
     ports:
       - "8000:80"
+    volumes:
+      - ./data/graph-data.json:/usr/share/nginx/html/assets/data/graph-data.json
     depends_on:
       - influxdb
       - grafana
       - leoenergy
-
