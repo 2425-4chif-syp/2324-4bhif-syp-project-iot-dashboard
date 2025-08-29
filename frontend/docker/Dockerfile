@@ -1,6 +1,7 @@
 FROM nginx:stable
 
-COPY ./frontend/docker/nginx.conf /etc/nginx/conf.d/default.conf
-COPY ./frontend/kiosk/dist/kiosk/browser/ /usr/share/nginx/html/
+# Der Pfad ist relativ zum Build-Kontext (Projektverzeichnis)
+COPY docker/nginx.conf /etc/nginx/nginx.conf
 
-
+# Angular-Build-Output – muss vorhanden sein!
+COPY kiosk/dist/kiosk/browser/ /usr/share/nginx/html/
