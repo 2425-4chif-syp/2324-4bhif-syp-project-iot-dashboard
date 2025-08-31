@@ -152,19 +152,10 @@
           <option *ngFor="let d of daysInYear" [ngValue]="d">{{ d.day }}. {{ months[d.month] }}</option>
         </select>
         <div class="current-two-day-info">
-          Gewählter Zeitraum: <strong>{{ selectedDayObj.day }}. {{ getMonthName(selectedDayObj) }} – {{ selectedDayObj.day + 1 }}. {{ getMonthName({ day: selectedDayObj.day + 1, month: selectedDayObj.month }) }}</strong>
+          Gewählter Zeitraum: <strong>{{ selectedDayObj.day }}. {{ getMonthName(selectedDayObj) }} – {{ getNextDayObj(selectedDayObj).day }}. {{ getMonthName(getNextDayObj(selectedDayObj)) }}</strong>
         </div>
       </div>
       <!-- 4-Stunden-Dropdown unter dem Datepicker anzeigen, wenn 4h ausgewählt ist -->
-<!-- Nur ein Dropdown für 4h anzeigen, doppeltes entfernen -->
-<div *ngIf="selectedDuration.short === '1h'" class="one-hour-selector" style="margin-top: 10px;">
-  <label for="oneHourSelect" class="one-hour-label">Stunde auswählen:</label>
-  <select id="oneHourSelect" [(ngModel)]="selectedHour" class="one-hour-dropdown" (change)="changeDuration()">
-    <option *ngFor="let h of hourOptions" [value]="h">
-      {{ h.toString().padStart(2, '0') }}:00 – {{ ((h + 1) % 24).toString().padStart(2, '0') }}:00
-    </option>
-  </select>
-</div>
       <!-- 5-Minuten-Dropdown nur anzeigen, wenn 5m ausgewählt ist -->
       <div *ngIf="selectedDuration.short === '5m'" class="minute-selector">
         <label for="minuteSelect" class="minute-label">Wähle 5-Minuten-Intervall:</label>
@@ -214,7 +205,7 @@
       <div *ngIf="selectedDuration.short === '4h'" style="margin-top: 8px;">
         <label for="fourHourSelect" style="margin-right: 8px;">Zeitraum auswählen:</label>
         <select id="fourHourSelect" [(ngModel)]="selectedHour" class="four-hour-dropdown" (change)="changeDuration()">
-          <option *ngFor="let interval of fourHourIntervals" [value]="interval.value">
+          <option *ngFor="let interval of fourHourIntervals" [ngValue]="interval.value">
             {{ interval.label }}
           </option>
         </select>

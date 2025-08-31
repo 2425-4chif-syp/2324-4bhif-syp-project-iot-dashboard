@@ -52,6 +52,17 @@ export class GraphOverviewComponent implements OnInit, AfterViewInit {
   public getMonthName(dayObj: { day: number, month: number }): string {
     return this.months[dayObj.month];
   }
+
+  // Hilfsmethode für die Anzeige des nächsten Tages (für 2-Tage-Ansicht)
+  public getNextDayObj(dayObj: { day: number, month: number }): { day: number, month: number } {
+    const daysInMonth = new Date(this.selectedYear, dayObj.month + 1, 0).getDate();
+    if (dayObj.day < daysInMonth) {
+      return { day: dayObj.day + 1, month: dayObj.month };
+    } else {
+      // Nächster Tag ist der 1. des Folgemonats
+      return { day: 1, month: (dayObj.month + 1) % 12 };
+    }
+  }
   public daysInMonth: number[] = [];
   public selectedMinute: number = 0;
   public minuteIntervals: { value: number, label: string }[] = Array.from({ length: 288 }, (_, i) => {
@@ -76,24 +87,15 @@ export class GraphOverviewComponent implements OnInit, AfterViewInit {
   @ViewChild('picker') picker!: MatDatepicker<Date>;
   // 4-Stunden-Intervalle: 1–5, 5–9, 9–13, 13–17, 17–21, 21–1
   public fourHourIntervals: { value: number, label: string }[] = [
-    { value: 1, label: '01:00 – 05:00' },
-    { value: 5, label: '05:00 – 09:00' },
-    { value: 9, label: '09:00 – 13:00' },
-    { value: 13, label: '13:00 – 17:00' },
-    { value: 17, label: '17:00 – 21:00' },
-    { value: 21, label: '21:00 – 01:00' }
+    { value: 0, label: '00:00 – 04:00' },
+    { value: 4, label: '04:00 – 08:00' },
+    { value: 8, label: '08:00 – 12:00' },
+    { value: 12, label: '12:00 – 16:00' },
+    { value: 16, label: '16:00 – 20:00' },
+    { value: 20, label: '20:00 – 00:00' }
   ];
-  private _selectedHour: number = 1;
-  public get selectedHour(): number {
-    return this._selectedHour;
-  }
-  public set selectedHour(val: number) {
-    this._selectedHour = val;
-    // Dashboard sofort aktualisieren, wenn 4h gewählt ist
-    if (this.selectedDuration.short === '4h') {
-      this.updateGraphLinks();
-    }
-  }
+  public selectedHour: number = 0;
+  
   ngAfterViewInit(): void {
     // Wird benötigt, damit ViewChild funktioniert
   }
@@ -294,19 +296,16 @@ export class GraphOverviewComponent implements OnInit, AfterViewInit {
       from = new Date(date.getFullYear(), date.getMonth(), date.getDate(), this.selectedHour, 0, 0, 0);
       to = new Date(from.getTime() + 60 * 60 * 1000); // 1 Stunde
     } else if (this.selectedDuration.short === '4h') {
-      // 4-Stunden-Ansicht mit festen Intervallen
+      // 4-Stunden-Ansicht mit festen Intervallen 
       const date = new Date(this.selectedDateString);
-      const interval = this.fourHourIntervals.find(i => i.value === this.selectedHour);
-      const startHour = interval ? interval.value : 1;
-      from = new Date(date.getFullYear(), date.getMonth(), date.getDate(), startHour, 0, 0, 0);
-      if (startHour === 21) {
+      from = new Date(date.getFullYear(), date.getMonth(), date.getDate(), this.selectedHour, 0, 0, 0);
+      if (this.selectedHour  === 21) {
         // 21–01:00, Endzeit ist am nächsten Tag 01:00
-        // from: 21:00 am gewählten Tag, to: 01:00 am Folgetag
         const nextDay = new Date(date);
         nextDay.setDate(date.getDate() + 1);
         to = new Date(nextDay.getFullYear(), nextDay.getMonth(), nextDay.getDate(), 1, 0, 0, 0);
       } else {
-        to = new Date(date.getFullYear(), date.getMonth(), date.getDate(), startHour + 4, 0, 0, 0);
+        to = new Date(date.getFullYear(), date.getMonth(), date.getDate(), this.selectedHour + 4, 0, 0, 0);
       }
     } else if (this.selectedDuration.short === '7d' && this.selectedWeek) {
       // Wochenansicht: von Wochenstart bis Wochenende
@@ -323,6 +322,10 @@ export class GraphOverviewComponent implements OnInit, AfterViewInit {
     } else if (this.selectedDuration.short === '2d') {
       from = new Date(this.selectedYear, this.selectedDayObj.month, this.selectedDayObj.day, 0, 0, 0);
       to = new Date(this.selectedYear, this.selectedDayObj.month, this.selectedDayObj.day + 1, 23, 59, 59, 999);
+    } else if (this.selectedDuration.short === '30d') {
+      // Monatsansicht: von Monatsanfang bis Monatsende
+      from = new Date(this.selectedYear, this.selectedMonth, 1, 0, 0, 0, 0);
+      to = new Date(this.selectedYear, this.selectedMonth + 1, 0, 23, 59, 59, 999);
     } else {
       from = new Date(this.selectedYear, this.selectedMonth, this.selectedDayObj.day, 0, 0, 0);
       to = new Date(from);
