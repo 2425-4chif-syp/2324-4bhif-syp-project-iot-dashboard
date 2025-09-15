@@ -1,0 +1,27 @@
+<div
+  class="room-box no-select"
+  [style.width.px]="room.width"
+  [style.height.px]="room.height"
+  (mousemove)="onDrag($event)"
+  (mouseup)="stopDrag()"
+>
+  <h2>{{ room.number }}</h2>
+  <div
+    class="pv-panel"
+    *ngFor="let panel of room.pvPanels"
+    (mousedown)="startDrag(panel, $event)"
+    (click)="selectPvPanel(panel)"
+    [style.left.px]="panel.x"
+    [style.top.px]="panel.y"
+  >
+    PV
+  </div>
+</div>
+
+<button class="back-button" (click)="backToMap()">Back to Map</button>
+
+<app-pv-info
+  *ngIf="selectedPvPanel"
+  [pvPanel]="selectedPvPanel"
+  (close)="closePvInfo()"
+></app-pv-info>

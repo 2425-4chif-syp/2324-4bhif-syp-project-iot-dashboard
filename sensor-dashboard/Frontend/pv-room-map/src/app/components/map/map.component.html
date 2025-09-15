@@ -1,0 +1,21 @@
+<div class="map-container">
+  <div class="map" [ngStyle]="getMapStyle()">
+    <!-- Gänge -->
+    <div *ngFor="let corridor of corridors | keyvalue">
+      <div *ngFor="let segment of corridor.value.segments"
+           class="corridor-segment"
+           [ngStyle]="getCorridorSegmentStyle(segment)">
+        <div class="corridor-label" *ngIf="segment.showLabel">{{corridor.value.id}}</div>
+      </div>
+    </div>
+
+    <!-- Räume -->
+    <div *ngFor="let room of rooms"
+         class="room"
+         [ngStyle]="getRoomStyle(room)">
+      <div class="room-label">{{room.RoomLabel}}</div>
+      <div class="room-name">{{room.RoomName}}</div>
+      <div class="room-type">{{room.RoomType}}</div>
+    </div>
+  </div>
+</div>

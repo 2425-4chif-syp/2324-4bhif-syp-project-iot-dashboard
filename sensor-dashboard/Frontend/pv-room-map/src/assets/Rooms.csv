@@ -1,0 +1,185 @@
+﻿RoomId;RoomLabel;RoomName;RoomType;Corridor;NeighboursInside;NeighbourOutside;Second NeighbourInside;Second NeighbourOutside;Third NeighbourOutside;Fourth NeighbourOutside
+;;Basement;;;;;;;;
+0000001;undefined;U01;Hall (Basement);kein Gang;Kein Nachbar;0000003;0;0000018;0;0
+0000002;undefined;U02;Hallway (left);kein Gang;Kein Nachbar;Kein Nachbar;0;0;0;0
+0000003;undefined;U03;Storage Room;0000002;0000001;0000004;0;0;0;0
+0000004;BioLab;U04;Laboratory;0000002;0000003;0000005;0;0;0;0
+0000005;BioLab;U04B;Laboratory;0000002;0000004;0000006;0;0;0;0
+0000006;undefined;U05;Storage;0000002;0000005;0000041;0;0;0;0
+0000007;undefined;U07;Plastics;0000002;Kein Nachbar;0000040;0;0;0;0
+0000008;undefined;U08;Telecommunications;0000002;0000011;0000009;0;0;0;0
+0000009;undefined;U08A;Computer Network Technology;0000002;0000008;0000010;0;0;0;0
+0000010;undefined;U08B;Network Technology;0000002;0000009;Kein Nachbar;0;0;0;0
+0000011;undefined;U10;IT Room;0000002;0000012;0000008;0;0;0;0
+0000012;undefined;U11;Teachers Restroom;0000002;0000013;0000011;0;0;0;0
+0000013;undefined;U14;Womens Restroom;0000002;0000014;0000012;0;0;0;0
+0000014;undefined;U16;Disabled Restroom;0000002;0000002;0000013;0;0;0;0
+0000015;undefined;U26;Shelter;0000002;0000001;0000002;0;0;0;0
+0000016;undefined;U39;Hallway (right);kein Gang;;;0;0;0;0
+0000017;undefined;U41;Shelter;0000016;0000001;0000019;0;0;0;0
+0000018;undefined;U58;Changing Room;0000016;0000001;0000025;0;0;0;0
+0000019;undefined;U66;Women’s Restroom;0000016;0000017;0000020;0;0;0;0
+0000020;undefined;U64;Men’s Restroom;0000016;0000019;0000021;0;0;0;0
+0000021;undefined;U70;Radio Station;0000016;0000020;0000021;0;0;0;0
+0000022;undefined;U71;High Frequency;0000016;0000021;0000022;0;0;0;0
+0000023;undefined;U72;Technical Informatics;0000016;0000022;Kein Nachbar;0;0;0;0
+0000024;undefined;U73;Control Technology;0000016;0000029;Kein Nachbar;0;0;0;0
+0000025;undefined;U74;Electrical Device Manufacturing;0000016;0000018;0000026;0;0;0;0
+0000026;undefined;U77;HF Technology;0000016;0000027;0000025;0;0;0;0
+0000027;undefined;U78;Print Manufacturing;0000016;0000028;0000026;0;0;0;0
+0000028;undefined;U79;Welding;0000016;Kein Nachbar;0000027;0;0;0;0
+0000029;undefined;U81;Control Engineering;0000016;0000030;0000024;0;0;0;0
+0000030;undefined;U82A;Electronics A;0000016;0000031;0000029;0;0;0;0
+0000031;undefined;U82B;Network Technology;0000016;0000032;0000030;0;0;0;0
+0000032;undefined;U83;Low-Frequency Technology;0000016;0000033;0000031;0;0;0;0
+0000033;undefined;U84A;Electrical Installation;0000016;0000034;0000032;0;0;0;0
+0000034;undefined;U84B;Basic Electrical Training;0000016;0000035;0000033;0;0;0;0
+0000035;undefined;U85;Electronics B;0000016;0000036;0000034;0;0;0;0
+0000036;undefined;U86A;Work Preparation;0000016;0000037;0000035;0;0;0;0
+0000037;undefined;U86B;Programming;0000016;0000038;0000036;0;0;0;0
+0000038;undefined;U87;Precision Engineering;0000002;0000037;0000039;0;0;0;0
+0000039;undefined;U88;Mechanics;0000002;0000038;0000007;0;0;0;0
+0000040;undefined;U89;Basic Mechanical Training;0000002;0000041;0000006;0;0;0;0
+0000041;undefined;U90;Magazine;0000002;0000042;0000006;0;0;0;0
+0000042;undefined;U91;Workshop Manager;0000002;0000043;0000041;0;0;0;0
+0000043;undefined;U92;Teachers' Lounge;0000002;Kein Nachbar;0000042;0;0;0;0
+0000044;;Ground Floor;;;;;;;0;0
+0000045;undefined;E01;Entrance;kein Gang;Kein Nachbar;Kein Nachbar;0;0;0;0
+0000046;undefined;E02;Hall (Ground Floor);kein Gang;0000047;0000049;0;0000067;0;0
+0000047;undefined;E03;School Caretaker;0000046;Kein Nachbar;0000046;0;0;0;0
+0000048;undefined;E04;Hallway (left);kein Gang;Kein Nachbar;Kein Nachbar;0;0;0;0
+0000049;undefined;E05;Teachers' Lounge;0000048;0000046;0000050;0;0;0;0
+0000050;undefined;E06;Teachers' Lounge;0000048;0000049;0000051;0;0;0;0
+0000051;Marie Curie;E07;Chemistry Room;0000048;0000050;0000052;0;0;0;0
+0000052;undefined;E08;Teachers' Lounge;0000048;0000051;0000053;0;0;0;0
+0000053;Lise Meitner;E09;Physics Room;0000048;0000052;Kein Nachbar;0;0;0;0
+0000054;undefined;E10;Classroom;0000048;0000055;Kein Nachbar;0;0;0;0
+0000055;undefined;E11;Classroom;0000048;0000056;0000054;0;0;0;0
+0000056;undefined;E13;Men’s Restroom;0000048;0000057;0000055;0;0;0;0
+0000057;undefined;E16;Teachers’ Restroom;0000048;0000058;0000056;0;0;0;0
+0000058;undefined;E18;Disabled Restroom;0000048;Kein Nachbar;0000057;0;0;0;0
+0000059;undefined;E19;Cleaning Closet;0000048;Kein Nachbar;0000060;0;0;0;0
+0000060;undefined;E20;Women’s Restroom;0000048;0000059;0000061;0;0;0;0
+0000061;undefined;E22;Classroom;0000048;0000060;0000061;0;0;0;0
+0000062;undefined;E23;Classroom;0000048;0000060;0000094;0;0;0;0
+0000063;undefined;E24;Classroom;0000048;0000064;0000091;0;0;0;0
+0000064;undefined;E25;Classroom;0000048;0000065;0000062;0;0;0;0
+0000065;undefined;E26;Classroom;0000048;Kein Nachbar;0000063;0;0;0;0
+0000066;undefined;E30;Hallway (right);kein Gang;Kein Nachbar;Kein Nachbar;0;0;0;0
+0000067;undefined;E31;Teachers' Lounge;0000066;0000046;0000068;0;0;0;0
+0000068;undefined;E32;Teachers' Lounge;0000066;0000067;0000069;0;0;0;0
+0000069;undefined;E33;Recreation Room;0000066;0000068;0000070;0;0;0;0
+0000070;undefined;E35;Administration Office;0000066;0000069;0000071;0;0;0;0
+0000071;undefined;E36;Administration Office;0000066;0000070;0000072;0;0;0;0
+0000072;undefined;E37;Principal;0000066;0000071;0000073;0;0;0;0
+0000073;Johannes Kepler;E38+39;Administration Office;0000066;0000072;Kein Nachbar;0;0;0;0
+0000074;undefined;E40;Electronics;0000066;Kein Nachbar;Kein Nachbar;0;0;0;0
+0000075;undefined;E41;Electronics;0000066;0000076;Kein Nachbar;0;0;0;0
+0000076;undefined;E42;Break Room;0000066;Kein Nachbar;0000075;0;0;0;0
+0000077;undefined;E43;Teachers' Restroom;0000066;Kein Nachbar;0000078;0;0;0;0
+0000078;undefined;E45+46;Disabled Restroom;0000066;0000077;0000079;0;0;0;0
+0000079;undefined;E50;Teachers' Lounge;0000066;0000078;0000080;0;0;0;0
+0000080;undefined;E51;Teachers' Lounge;0000066;0000079;0000081;0;0;0;0
+0000081;undefined;E52;Department Head (IT);0000066;0000080;0000082;0;0;0;0
+0000082;undefined;E53+54;Teachers' Lounge;0000066;0000081;0000083;0;0;0;0
+0000083;undefined;E55;Department Head (ET);0000066;0000082;Kein Nachbar;0;0;0;0
+0000084;undefined;E56;Storage Room;0000066;Kein Nachbar;Kein Nachbar;0;0;0;0
+0000085;undefined;E57;Canteen;0000066;Kein Nachbar;0000086;0;0;0;0
+0000086;Edsger Dijkstra;E58-1;IT Room;0000066;0000085;0000087;0;0;0;0
+0000087;undefined;E58-2;Classroom;0000066;0000086;Kein Nachbar;0;0;0;0
+0000088;undefined;E59;Classroom;0000066;0000089;Kein Nachbar;0;0;0;0
+0000089;undefined;E60;Men’s Restroom;0000066;0000090;0000088;0;0;0;0
+0000090;undefined;E62;Women’s Restroom;0000066;Kein Nachbar;0000089;0;0;0;0
+0000091;undefined;E71;Classroom;0000048;0000063;0000092;0;0;0;0
+0000092;undefined;E72;Classroom;0000048;0000091;Kein Nachbar;0;0;0;0
+0000093;Margaret Hamilton;E73-a;IT Room;0000048;0000094;Kein Nachbar;0;0;0;0
+0000094;undefined;E74;Teachers' Lounge;0000048;0000062;0000093;0;0;0;0
+0000095;undefined;T1;Hallway (Gyms);kein Gang;Kein Nachbar;Kein Nachbar;0;0;0;0
+0000096;undefined;T2;School Doctor;0000095;Kein Nachbar;0000097;0;0;0;0
+0000097;undefined;T05;Old HTL Gym;0000095;0000096;0000098;0;0;0;0
+0000098;undefined;T10;New HTL Gym;0000095;0000097;Kein Nachbar;0;0;0;0
+0000099;undefined;T18;Storage;0000095;Kein Nachbar;0000100;0;0;0;0
+0000100;undefined;T21;Storage;0000095;0000099;Kein Nachbar;0;0;0;0
+0000101;;First Floor;;;;;;;0;0
+0000102;undefined;101;Hall (1st Floor);kein Gang;Kein Nachbar;0000104;0;0000121;0000123;0000139
+0000103;undefined;102;Hallway (left);kein Gang;Kein Nachbar;Kein Nachbar;0;0;0;0
+0000104;undefined;103;Teachers' Lounge;0000103;0000102;0000105;0;0;0;0
+0000105;undefined;104;Classroom;0000103;0000104;0000106;0;0;0;0
+0000106;undefined;105;Classroom;0000103;0000105;0000107;0;0;0;0
+0000107;undefined;106;Classroom;0000103;0000106;0000108;0;0;0;0
+0000108;undefined;107;Classroom;0000103;0000107;Kein Nachbar;0;0;0;0
+0000109;Ada Lovelace;108-a;IT Room;0000103;0000110;Kein Nachbar;0;0;0;0
+0000110;Don Knuth;109-a;IT Room;0000103;0000111;0000109;0;0;0;0
+0000111;undefined;110;Men’s Restroom;0000103;0000112;0000110;0;0;0;0
+0000112;undefined;114;Teachers’ Restroom;0000103;0000113;0000111;0;0;0;0
+0000113;undefined;115;Disabled Restroom;0000103;Kein Nachbar;0000112;0;0;0;0
+0000114;undefined;116;Cleaning Closet;0000103;Kein Nachbar;0000115;0;0;0;0
+0000115;undefined;118;Women’s Restroom;0000103;0000114;0000116;0;0;0;0
+0000116;undefined;119;Classroom;0000103;0000115;0000117;0;0;0;0
+0000117;undefined;120;Classroom;0000103;0000116;0000143;0;0;0;0
+0000118;Niklaus Wirth;121;IT Room;0000103;0000119;0000140;0;0;0;0
+0000119;Grace Hopper;122;IT Room;0000103;0000120;0000118;0;0;0;0
+0000120;Brian Kernighan;123;IT Room;0000103;0000121;0000119;0;0;0;0
+0000121;undefined;124;System Administration;0000103;0000102;0000120;0;0;0;0
+0000122;undefined;130;Hallway (right);kein Gang;Kein Nachbar;Kein Nachbar;0;0;0;0
+0000123;undefined;131;Sound Room;0000122;0000102;0000124;0;0;0;0
+0000124;undefined;132;Classroom;0000122;0000123;0000125;0;0;0;0
+0000125;undefined;133;Classroom;0000122;0000124;0000126;0;0;0;0
+0000126;undefined;134;Classroom;0000122;0000125;Kein Nachbar;0;0;0;0
+0000127;Barbara Liskov;135;IT Room;0000122;0000128;Kein Nachbar;0;0;0;0
+0000128;undefined;136;Men’s Restroom;0000122;0000129;0000127;0;0;0;0
+0000129;undefined;138;Cleaning Closet;0000122;Kein Nachbar;0000128;0;0;0;0
+0000130;undefined;139;Teachers Restroom;0000122;Kein Nachbar;0000131;0;0;0;0
+0000131;undefined;140;Women's Restroom;0000122;0000130;0000132;0;0;0;0
+0000132;undefined;142;Teachers Lounge;0000122;0000131;0000133;0;0;0;0
+0000133;undefined;143a;IT Room;0000122;0000132;0000134;0;0;0;0
+0000134;undefined;143b;IT Room;0000122;0000133;Kein Nachbar;0;0;0;0
+0000135;undefined;144;IT Room;0000122;0000136;Kein Nachbar;0;0;0;0
+0000136;undefined;145;Classroom;0000122;0000137;0000135;0;0;0;0
+0000137;undefined;146;Classroom;0000122;0000138;0000136;0;0;0;0
+0000138;undefined;147;Classroom;0000122;0000139;0000137;0;0;0;0
+0000139;undefined;148;Teachers Lounge;0000122;0000102;0000138;0;0;0;0
+0000140;undefined;151;Classroom;0000103;0000118;0000141;0;0;0;0
+0000141;undefined;152;Classroom;0000103;0000140;Kein Nachbar;0;0;0;0
+0000142;undefined;153;Classroom;0000103;0000143;Kein Nachbar;0;0;0;0
+0000143;undefined;154;Classroom;0000103;0000117;0000142;0;0;0;0
+0000144;;Second Floor;;;;;;;0;0
+0000145;undefined;201;Hall (2nd Floor);kein Gang;Kein Nachbar;0000147;0;0;0;0
+0000146;undefined;202;Hallway (left);kein Gang;Kein Nachbar;Kein Nachbar;0;0;0;0
+0000147;undefined;203;Teachers' Lounge;0000146;0000145;0000148;0;0000149;0;0
+0000148;undefined;204;Classroom;0000146;0000147;0000149;0;0000150;0;0
+0000149;undefined;205;Teachers' Lounge;0000146;0000148;Kein Nachbar;0000147;0;0;0
+0000150;undefined;206;Teachers' Lounge;0000146;0000148;0000151;0;0;0;0
+0000151;undefined;208;Teachers' Restroom;0000146;0000150;Kein Nachbar;0;0;0;0
+0000152;undefined;209;Men’s Restroom;0000146;Kein Nachbar;0000153;0;0;0;0
+0000153;undefined;212;Women’s Restroom;0000146;0000152;0000154;0;0;0;0
+0000154;undefined;213;Classroom;0000146;0000153;0000155;0;0;0;0
+0000155;undefined;214;Classroom;0000146;0000154;0000182;0;0;0;0
+0000156;undefined;215;Classroom;0000146;0000157;0000179;0;0;0;0
+0000157;undefined;216;Classroom;0000146;0000158;0000156;0;0;0;0
+0000158;undefined;217;Classroom;0000146;0000159;0000157;0;0;0;0
+0000159;undefined;218;Teachers' Lounge;0000146;0000160;0000158;0;0;0;0
+0000160;undefined;220;Teachers' Lounge;0000145;0000161;0000159;0;0;0;0
+0000161;undefined;221;Teachers' Lounge;0000145;0000162;0000160;0;0;0;0
+0000162;undefined;222;Teachers' Lounge;0000145;0000163;0000161;0;0;0;0
+0000163;undefined;223;Teachers' Lounge;0000145;0000162;0000164;0;0;0;0
+0000164;undefined;224;Teachers' Lounge;0000145;0000163;0000166;0;0;0;0
+0000165;undefined;225;Hallway (right);kein Gang;Kein Nachbar;Kein Nachbar;0;0;0;0
+0000166;undefined;226;Teachers' Lounge;0000165;0000164;0000167;0;0;0;0
+0000167;undefined;227;Classroom;0000165;0000166;0000168;0;0;0;0
+0000168;undefined;228;Classroom;0000165;0000167;0000169;0;0;0;0
+0000169;undefined;229;Classroom;0000165;0000168;Kein Nachbar;0;0;0;0
+0000170;undefined;230;Classroom;0000165;0000171;Kein Nachbar;0;0;0;0
+0000171;undefined;231;Classroom;0000165;0000172;0000170;0;0;0;0
+0000172;undefined;232;Men’s Restroom;0000165;0000173;0000171;0;0;0;0
+0000173;undefined;236;Women’s Restroom;0000165;Kein Nachbar;0000172;0;0;0;0
+0000174;undefined;237;Teachers' Lounge;0000165;0000175;Kein Nachbar;0;0;0;0
+0000175;undefined;238;Classroom;0000165;0000176;0000174;0;0;0;0
+0000176;undefined;239;Study Group Room;0000165;0000177;0000175;0000178;0000000;0;0
+0000177;undefined;240;Small Chamber;0000165;0000178;0000176;0;0;0;0
+0000178;undefined;241;Teachers' Lounge;0000165;0000145;0000177;0;0000176;0;0
+0000179;undefined;251;Classroom;0000146;0000156;0000180;0;0;0;0
+0000180;undefined;252;Classroom;0000146;0000179;Kein Nachbar;0;0;0;0
+0000181;Steve Wozniak;253-a;IT Room;0000146;0000182;Kein Nachbar;0;0;0;0
+0000182;undefined;254;Teachers' Lounge;0000146;0000155;0000181;0;0;0;0
+;;;;;;;;;;

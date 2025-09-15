@@ -1,0 +1,511 @@
+/* Allgemeine Container-Einstellungen */
+.building-container {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+/* Standard Button Style */
+.standard-button {
+  background-color: rgba(255, 255, 255, 0.85) !important;
+  color: #555 !important;
+  border: none;
+  padding: 0 16px;
+  height: 36px;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+  
+  .mat-icon {
+    color: #555 !important;
+  }
+  
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.95) !important;
+    transform: translateY(-1px);
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+  }
+}
+
+/* Header-Styling */
+.header {
+  background-color: #FF8B7C; /* Rosa-Farbton */
+  color: white;
+  padding: 10px 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+}
+
+/* Neues Flex-Layout für den Header */
+.header-content {
+  display: flex;
+  justify-content: space-between; /* Elemente auf der gesamten Breite verteilen */
+  align-items: center;
+  width: 100%;
+}
+
+.header-left, .header-center, .header-right {
+  display: flex;
+  align-items: center;
+}
+
+.header-left {
+  flex: 0 0 auto; /* Keine Größenänderung, basierend auf Inhalt */
+}
+
+.header-center {
+  flex: 1; /* Nimmt verfügbaren Platz ein */
+  display: flex;
+  justify-content: center; /* Zentriert die Buttons */
+}
+
+.header-right {
+  flex: 0 0 auto; /* Keine Größenänderung, basierend auf Inhalt */
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.header .title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+/* Stil für den Sensor-Zuweisen-Button und Toggle-Sidebar-Button */
+.sensor-assign-button, .toggle-sidebar-button {
+  padding: 6px 12px;
+  font-weight: 500;
+  font-size: 0.9rem;
+  transition: all 0.2s ease-in-out;
+  border: none;
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.85);
+  color: #555;
+  position: relative;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 3px 6px rgba(0, 0, 0, 0.12);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.95);
+    transform: translateY(-1px);
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05), 0 4px 8px rgba(0, 0, 0, 0.15);
+  }
+
+  &:active {
+    background-color: #E56E6C; /* Dunklere Lachsfarbe */
+    color: white;
+    font-weight: 600;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+}
+
+.toggle-sidebar-button {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+}
+
+/* Entfernen des nicht mehr benötigten alten Button-Stils */
+.map-sensors-button {
+  display: none; /* Versteckt alten Stil */
+}
+
+.header .filter-buttons {
+  display: flex;
+  gap: 12px;
+}
+
+.filter-buttons .mat-button-toggle-group {
+  border-radius: 8px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12);
+  border: none;
+  overflow: hidden;
+  background-color: transparent;
+}
+
+.filter-buttons .mat-button-toggle {
+  padding: 6px 12px;
+  font-weight: 500;
+  font-size: 0.9rem;
+  transition: all 0.2s ease-in-out;
+  border: none;
+  background-color: rgba(255, 255, 255, 0.85);
+  color: #555;
+  position: relative;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin: 0 1px;
+  
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.95);
+    transform: translateY(-1px);
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+  }
+
+  &.mat-button-toggle-checked {
+    background-color: #E56E6C; /* Dunklere Lachsfarbe */
+    color: white;
+    font-weight: 600;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+}
+
+/* Layout für den Hauptinhalt mit Seitenleiste */
+.main-content {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Floors-Container Styling */
+.floors-container {
+  flex: 1;
+  padding: 10px;
+  overflow-y: auto;
+  transition: all 0.3s ease;
+}
+
+.building-container.sidebar-open .floors-container {
+  margin-right: 250px; /* Platz für die Seitenleiste */
+}
+
+/* Neue Styles für die Seitenleiste mit nicht zugewiesenen Sensoren */
+.sensors-sidebar {
+  width: 250px;
+  background-color: #f5f5f5;
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  overflow-y: auto;
+  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  box-sizing: border-box;
+  transition: all 0.3s ease;
+  z-index: 5;
+
+  h3 {
+    color: #FF8B7C;
+    margin-top: 0;
+    margin-bottom: 15px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid rgba(255, 139, 124, 0.2);
+    font-size: 1rem;
+    font-weight: 600;
+  }
+}
+
+.unassigned-sensors-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.unassigned-sensor {
+  background-color: white;
+  border-radius: 8px;
+  padding: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+  cursor: move;
+  position: relative;
+  transition: all 0.3s ease;
+  border: 2px dashed transparent;
+
+  &:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+    transform: translateY(-2px);
+    border-color: #FF8B7C;
+  }
+
+  .sensor-content {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .sensor-id {
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 4px;
+  }
+
+  .sensor-floor {
+    font-size: 0.8rem;
+    color: #666;
+  }
+
+  .drag-hint {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: #999;
+  }
+}
+
+/* Drag and Drop Styles */
+.cdk-drag-preview {
+  box-sizing: border-box;
+  border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+  opacity: 0.8;
+}
+
+.cdk-drag-placeholder {
+  opacity: 0.3;
+}
+
+.cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.sensor-drag-preview {
+  background-color: white;
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  width: 200px;
+
+  p {
+    margin: 5px 0;
+    
+    &:first-child {
+      font-weight: 600;
+    }
+    
+    &:last-child {
+      font-size: 0.8em;
+      color: #666;
+    }
+  }
+}
+
+/* Styles für die Drop-Zonen (Räume) */
+.room.cdk-drop-list-dragging {
+  border: 2px dashed #FF8B7C !important;
+  background-color: rgba(255, 139, 124, 0.08) !important;
+}
+
+/* Rest des bestehenden Stils für die Stockwerke und Räume */
+.floor {
+  margin-bottom: 15px;
+  padding: 0.5rem;
+  width: 100%;
+  box-sizing: border-box;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  margin-left: 0;
+  background-color: #ffffff; /* Weißer Hintergrund für alle Stockwerke */
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  h2 {
+    color: #FF8B7C;
+    margin-bottom: 10px;
+    padding-bottom: 0.15rem;
+    border-bottom: 2px solid rgba(255, 139, 124, 0.2);
+    font-size: 1rem;
+    font-weight: 600;
+    margin-left: 5px;
+  }
+}
+
+.rooms-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+  gap: 5px;
+  padding: 0 5px;
+  width: 100%;
+  box-sizing: border-box;
+  margin-left: 0;
+}
+
+.room {
+  aspect-ratio: 1;
+  background-color: #f5f5f5;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.65rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  min-width: 20px;
+  user-select: none;
+  padding: 2px;
+  min-height: 40px;
+  position: relative; /* Wichtig für die Positionierung des Entfernen-Buttons */
+
+  // Temperature ranges
+  &.temp-optimal {
+    background-color: rgba(75, 181, 67, 0.2);  // Green
+    border-color: rgba(75, 181, 67, 0.4);
+  }
+
+  &.temp-warning {
+    background-color: rgba(255, 165, 0, 0.2);  // Orange
+    border-color: rgba(255, 165, 0, 0.4);
+  }
+
+  &.temp-danger {
+    background-color: rgba(255, 69, 58, 0.2);  // Red
+    border-color: rgba(255, 69, 58, 0.4);
+  }
+
+  // Humidity ranges
+  &.humidity-optimal {
+    background-color: rgba(75, 181, 67, 0.2);
+    border-color: rgba(75, 181, 67, 0.4);
+  }
+
+  &.humidity-warning {
+    background-color: rgba(255, 165, 0, 0.2);
+    border-color: rgba(255, 165, 0, 0.4);
+  }
+
+  &.humidity-danger {
+    background-color: rgba(255, 69, 58, 0.2);
+    border-color: rgba(255, 69, 58, 0.4);
+  }
+
+  // CO2 ranges
+  &.co2-optimal {
+    background-color: rgba(75, 181, 67, 0.2);
+    border-color: rgba(75, 181, 67, 0.4);
+  }
+
+  &.co2-warning {
+    background-color: rgba(255, 165, 0, 0.2);
+    border-color: rgba(255, 165, 0, 0.4);
+  }
+
+  &.co2-danger {
+    background-color: rgba(255, 69, 58, 0.2);
+    border-color: rgba(255, 69, 58, 0.4);
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  .room-name {
+    font-weight: 600;
+    margin-bottom: 1px;
+    font-size: 0.75em;
+    text-align: center;
+  }
+
+  .sensor-data {
+    font-size: 0.80em;
+    font-weight: 500;
+
+    .sensor-value {
+      background-color: rgba(255, 139, 124, 0.1);
+      padding: 1px 2px;
+      margin: 1px 0;
+      border-radius: 3px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+  }
+
+  .assigned-sensors {
+    margin-top: auto; /* Drückt die Chips nach unten */
+    padding-top: 2px;
+  }
+}
+
+/* Styles für die zugeordneten Sensoren in den Raumboxen */
+.assigned-sensors {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  margin-top: 2px;
+  width: 100%;
+}
+
+.assigned-sensor-chip {
+  background-color: rgba(255, 139, 124, 0.2);
+  border: 1px solid rgba(255, 139, 124, 0.4);
+  border-radius: 4px;
+  padding: 2px 4px;
+  font-size: 0.55em;
+  cursor: move;
+  user-select: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 90%;
+  
+  &:hover {
+    background-color: rgba(255, 139, 124, 0.4);
+  }
+}
+
+.chip-text {
+  pointer-events: none; /* Damit Clicks auf den Text das Dragging nicht stören */
+}
+
+/* Dragging Style überschreiben, damit er besser funktioniert */
+.cdk-drag-preview.assigned-sensor-chip {
+  padding: 4px 8px;
+  font-size: 0.8em;
+}
+
+/* Style für den Entfernen-Button in den Raumboxen */
+.remove-sensor-btn {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  z-index: 5;
+  background-color: rgba(255, 255, 255, 0.7);
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    opacity: 1;
+    background-color: rgba(255, 69, 58, 0.2);
+  }
+  
+  mat-icon {
+    font-size: 12px;
+    width: 12px;
+    height: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #555;
+    
+    &:hover {
+      color: #ff4545;
+    }
+  }
+}

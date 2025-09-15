@@ -1,0 +1,160 @@
+<div class="threshold-settings-container">
+  <div class="threshold-settings-header">
+    <h2>Schwellenwerte einstellen</h2>
+    <button mat-icon-button class="close-button" (click)="closeDialog()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <div class="threshold-settings-content">
+    <mat-tab-group (selectedTabChange)="onTabChange($event)">
+      <!-- Temperatur Tab -->
+      <mat-tab label="Temperatur">
+        <div class="threshold-tab-content">
+          <div class="threshold-info">
+            <div class="color-box optimal"></div>
+            <p>Grün: Optimal ({{ temperatureThresholds.warningLow }} - {{ temperatureThresholds.warningHigh }} °C)</p>
+          </div>
+          <div class="threshold-info">
+            <div class="color-box warning"></div>
+            <p>Orange: Grenzbereich</p>
+          </div>
+          <div class="threshold-info">
+            <div class="color-box danger"></div>
+            <p>Rot: Kritisch (zu kalt/zu heiß)</p>
+          </div>
+          
+          <div class="threshold-inputs">
+            <div class="input-group">
+              <label>Zu kalt (unter)</label>
+              <div class="input-with-unit">
+                <input type="number" [(ngModel)]="temperatureThresholds.dangerLow">
+                <span class="unit">°C</span>
+              </div>
+            </div>
+            
+            <div class="input-group">
+              <label>Optimal von</label>
+              <div class="input-with-unit">
+                <input type="number" [(ngModel)]="temperatureThresholds.warningLow">
+                <span class="unit">°C</span>
+              </div>
+            </div>
+            
+            <div class="input-group">
+              <label>Optimal bis</label>
+              <div class="input-with-unit">
+                <input type="number" [(ngModel)]="temperatureThresholds.warningHigh">
+                <span class="unit">°C</span>
+              </div>
+            </div>
+            
+            <div class="input-group">
+              <label>Zu heiß (über)</label>
+              <div class="input-with-unit">
+                <input type="number" [(ngModel)]="temperatureThresholds.dangerHigh">
+                <span class="unit">°C</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </mat-tab>
+      
+      <!-- Luftfeuchtigkeit Tab -->
+      <mat-tab label="Luftfeuchtigkeit">
+        <div class="threshold-tab-content">
+          <div class="threshold-info">
+            <div class="color-box optimal"></div>
+            <p>Grün: Optimal ({{ humidityThresholds.warningLow }} - {{ humidityThresholds.warningHigh }} %)</p>
+          </div>
+          <div class="threshold-info">
+            <div class="color-box warning"></div>
+            <p>Orange: Grenzbereich</p>
+          </div>
+          <div class="threshold-info">
+            <div class="color-box danger"></div>
+            <p>Rot: Kritisch (zu trocken/zu feucht)</p>
+          </div>
+          
+          <div class="threshold-inputs">
+            <div class="input-group">
+              <label>Zu trocken (unter)</label>
+              <div class="input-with-unit">
+                <input type="number" [(ngModel)]="humidityThresholds.dangerLow">
+                <span class="unit">%</span>
+              </div>
+            </div>
+            
+            <div class="input-group">
+              <label>Optimal von</label>
+              <div class="input-with-unit">
+                <input type="number" [(ngModel)]="humidityThresholds.warningLow">
+                <span class="unit">%</span>
+              </div>
+            </div>
+            
+            <div class="input-group">
+              <label>Optimal bis</label>
+              <div class="input-with-unit">
+                <input type="number" [(ngModel)]="humidityThresholds.warningHigh">
+                <span class="unit">%</span>
+              </div>
+            </div>
+            
+            <div class="input-group">
+              <label>Zu feucht (über)</label>
+              <div class="input-with-unit">
+                <input type="number" [(ngModel)]="humidityThresholds.dangerHigh">
+                <span class="unit">%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </mat-tab>
+      
+      <!-- CO2 Tab -->
+      <mat-tab label="CO2">
+        <div class="threshold-tab-content">
+          <div class="threshold-info">
+            <div class="color-box optimal"></div>
+            <p>Grün: Gut ({{ co2Thresholds.dangerLow }} - {{ co2Thresholds.warningLow }} ppm)</p>
+          </div>
+          <div class="threshold-info">
+            <div class="color-box warning"></div>
+            <p>Orange: Erhöht ({{ co2Thresholds.warningLow }} - {{ co2Thresholds.warningHigh }} ppm)</p>
+          </div>
+          <div class="threshold-info">
+            <div class="color-box danger"></div>
+            <p>Rot: Schlecht (über {{ co2Thresholds.warningHigh }} ppm)</p>
+          </div>
+          
+          <div class="threshold-inputs">
+            <div class="input-group">
+              <label>Ideal bis</label>
+              <div class="input-with-unit">
+                <input type="number" [(ngModel)]="co2Thresholds.warningLow">
+                <span class="unit">ppm</span>
+              </div>
+            </div>
+            
+            <div class="input-group">
+              <label>Kritisch ab</label>
+              <div class="input-with-unit">
+                <input type="number" [(ngModel)]="co2Thresholds.warningHigh">
+                <span class="unit">ppm</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+  
+  <div class="threshold-actions">
+    <button mat-button (click)="closeDialog()">Abbrechen</button>
+    <button mat-raised-button class="save-button" [disabled]="isSaving" (click)="saveThresholds()">
+      <span *ngIf="!isSaving">Speichern</span>
+      <span *ngIf="isSaving">Speichern...</span>
+    </button>
+  </div>
+</div>

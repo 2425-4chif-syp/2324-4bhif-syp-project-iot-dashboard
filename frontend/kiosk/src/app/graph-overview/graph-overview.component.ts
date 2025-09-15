@@ -407,6 +407,12 @@ export class GraphOverviewComponent implements OnInit, AfterViewInit {
     this.currentGraph = null;
   }
 
+  // Button-Handler für Sensor-Dashboard
+  public openSensorDashboard(): void {
+    // Hier kannst du die gewünschte Logik einfügen, z.B. Navigation oder Modal öffnen
+    alert('Sensor-Dashboard geöffnet!');
+  }
+
   public changeDuration(): void {
     this.isMonthSelected = false;
     this.updateGraphLinks();

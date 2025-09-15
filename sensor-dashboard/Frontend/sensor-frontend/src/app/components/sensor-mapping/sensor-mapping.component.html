@@ -1,0 +1,85 @@
+<div class="sensor-mapping-container">
+  <div class="sensor-mapping-header">
+    <h2>Sensoren zu Räumen zuweisen</h2>
+    <button mat-icon-button class="close-button" (click)="closeDialog()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <div class="sensor-mapping-content">
+    <div class="sensor-list">
+      <h3>Verfügbare Sensoren</h3>
+      
+      <mat-form-field appearance="fill" class="floor-filter">
+        <mat-label>Stockwerk filtern</mat-label>
+        <mat-select [(ngModel)]="selectedFloor" (selectionChange)="loadSensors()">
+          <mat-option value="all">Alle Stockwerke</mat-option>
+          <mat-option *ngFor="let floor of floors" [value]="floor">{{ floor }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      
+      <div class="sensors-container">
+        <mat-card *ngFor="let sensor of availableSensors" 
+                 [class.selected]="selectedSensor?.sensorId === sensor.sensorId && selectedSensor?.floor === sensor.floor"
+                 (click)="selectSensor(sensor)"
+                 cdkDrag
+                 [attr.data-sensor-id]="sensor.sensorId"
+                 [attr.data-floor]="sensor.floor"
+                 class="draggable-sensor">
+          <div class="drag-handle" cdkDragHandle>
+            <mat-icon>drag_indicator</mat-icon>
+          </div>
+          <mat-card-header>
+            <mat-card-title>{{ sensor.sensorId }}</mat-card-title>
+            <mat-card-subtitle>Stockwerk: {{ sensor.floor }}</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <div *ngIf="sensor.mappedRoomName" class="mapped-info">
+              <p>Aktuell zugewiesen: <strong>{{ sensor.mappedRoomName }}</strong></p>
+            </div>
+          </mat-card-content>
+          <!-- Preview when dragging -->
+          <div *cdkDragPreview class="sensor-drag-preview">
+            <p>{{ sensor.sensorId }}</p>
+            <p class="floor">Stockwerk: {{ sensor.floor }}</p>
+          </div>
+        </mat-card>
+      </div>
+    </div>
+    
+    <div class="room-list">
+      <h3>Verfügbare Räume</h3>
+      
+      <div class="rooms-container">
+        <mat-card *ngFor="let room of availableRooms"
+                 [class.selectable]="selectedSensor !== null"
+                 [class.selected]="selectedRoom?.roomId === room.roomId"
+                 (click)="selectRoom(room)"
+                 cdkDropList
+                 [cdkDropListData]="room"
+                 (cdkDropListDropped)="onSensorDrop($event)"
+                 class="room-drop-zone">
+          <mat-card-header>
+            <mat-card-title>{{ room.roomName }}</mat-card-title>
+            <mat-card-subtitle>{{ room.roomLabel }}</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content class="drop-zone-hint">
+            <mat-icon>input</mat-icon>
+            <span>Sensor hier ablegen</span>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+  </div>
+  
+  <div class="action-buttons">
+    <button mat-raised-button color="warn" [disabled]="!selectedSensor || !selectedSensor.mappedRoomName" 
+            (click)="removeMappingForSelectedSensor()">
+      Zuordnung entfernen
+    </button>
+    <button mat-raised-button color="primary" [disabled]="!selectedSensor || !selectedRoom"
+            (click)="saveSensorRoomMapping()">
+      Sensor dem Raum zuweisen
+    </button>
+  </div>
+</div>

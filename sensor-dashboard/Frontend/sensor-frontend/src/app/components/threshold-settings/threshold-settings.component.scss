@@ -1,0 +1,227 @@
+.threshold-settings-container {
+  display: flex;
+  flex-direction: column;
+  width: 450px;
+  height: 520px;
+  padding: 8px;
+  background-color: #ffffff;
+  border-radius: 8px;
+}
+
+.threshold-settings-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 3px;
+
+  h2 {
+    margin: 0;
+    color: #FF8B7C;
+    font-size: 1.2rem;
+    font-weight: 500;
+  }
+}
+
+.threshold-settings-content {
+  flex: 1;
+  overflow-y: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.threshold-tab-content {
+  padding: 6px 6px;
+  min-height: 400px !important;
+  height: 400px !important;
+  display: flex;
+  flex-direction: column;
+
+  /* Remove the spacer */
+  &::after {
+    display: none;
+  }
+
+  h3 {
+    margin-top: 0;
+    color: #FF8B7C;
+    margin-bottom: 8px;
+  }
+}
+
+.threshold-info {
+  display: flex;
+  align-items: center;
+  margin-bottom: 3px;
+  
+  .color-box {
+    width: 14px;
+    height: 14px;
+    margin-right: 6px;
+    border-radius: 3px;
+
+    &.optimal {
+      background-color: #4BB543; // Green
+    }
+
+    &.warning {
+      background-color: #FFA500; // Orange
+    }
+
+    &.danger {
+      background-color: #FF453A; // Red
+    }
+  }
+
+  p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #333;
+  }
+}
+
+.threshold-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 4px;
+  flex: 1;
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    margin-bottom: 5px;
+
+    label {
+      font-weight: 500;
+      font-size: 0.85rem;
+      color: #444;
+      margin-bottom: 1px;
+    }
+
+    .input-with-unit {
+      display: flex;
+      align-items: center;
+
+      input {
+        flex: 1;
+        padding: 5px 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 0.95rem;
+
+        &:focus {
+          outline: none;
+          border-color: #FF8B7C;
+        }
+      }
+
+      .unit {
+        margin-left: 6px;
+        font-size: 0.9rem;
+        color: #666;
+        font-weight: 400;
+      }
+    }
+  }
+}
+
+.threshold-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 4px;
+  gap: 8px;
+  padding-top: 6px;
+  border-top: 1px solid #eee;
+
+  button {
+    font-size: 0.95rem;
+    padding: 6px 16px;
+    border-radius: 4px;
+
+    &.save-button {
+      background-color: #FF8B7C;
+      color: white;
+    }
+
+    &:first-child {
+      background-color: #f2f2f2;
+      color: #333;
+    }
+  }
+}
+
+// Material Design Overrides
+.mat-mdc-tab-header {
+  margin-bottom: 10px;
+}
+
+.mat-mdc-tab-group {
+  height: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.mat-mdc-tab .mdc-tab__text-label {
+  color: #333 !important;  /* Always keep the tab text black */
+  font-size: 0.95rem;
+}
+
+.mat-mdc-tab:not(.mat-mdc-tab-disabled).mdc-tab--active .mdc-tab__text-label {
+  font-weight: 500;
+  color: #333 !important;  /* Even when active, keep the text black */
+}
+
+.mat-mdc-ink-bar {
+  background-color: #FF8B7C !important;
+}
+
+// Direct override for the tab indicator line to make it salmon/coral
+::ng-deep {
+  .mat-mdc-tab-header .mat-mdc-tab-header-pagination-controls-enabled .mat-mdc-tab-header-pagination,
+  .mat-mdc-tab-header .mdc-tab-indicator__content--underline,
+  .mat-mdc-tab-group .mat-mdc-ink-bar {
+    border-color: #FF8B7C !important;
+    background-color: #FF8B7C !important;
+  }
+
+  .mdc-tab-indicator__content--underline {
+    border-top-width: 2px !important;
+    border-top-style: solid !important;
+    border-top-color: #FF8B7C !important;
+  }
+}
+
+// Slider Styles for better control
+.mat-slider-horizontal {
+  width: 100%;
+  margin: 10px 0;
+}
+
+// Error SnackBar styling
+.error-snackbar {
+  background-color: #f44336;
+  color: white;
+}
+
+// Make tab content have consistent height but not fixed height
+.mat-tab-body-content {
+  min-height: auto !important;
+  height: auto !important;
+  overflow-y: hidden !important;
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .threshold-settings-container {
+    min-width: unset;
+    width: 100%;
+  }
+
+  .threshold-inputs {
+    grid-template-columns: 1fr;
+  }
+}

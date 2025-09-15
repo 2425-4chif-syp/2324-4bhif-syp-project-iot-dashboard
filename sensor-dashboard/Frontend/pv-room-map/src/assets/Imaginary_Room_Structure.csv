@@ -1,0 +1,31 @@
+RoomId,RoomLabel,RoomName,RoomType,North,South,West,East,Gang-Connection,Gang-Position
+0001,R01,Eingangshalle,Halle,,0002,,,G01,Below
+0002,R02,Empfang,Büro,0001,0003,,,G01,Below
+0003,R03,Konferenzraum,Besprechungsraum,0002,0004,,,G01,Below
+0004,R04,Büro 1,Büro,0003,,0005,,G01,Below
+0005,R05,Büro 2,Büro,,,0006,0004,G01,Right
+0006,R06,Lagerraum,Lager,,,0007,0005,G01,Right
+0007,R07,IT-Raum,Technikraum,,,0008,0006,G01,Right
+0008,R08,Pausenraum,Aufenthaltsraum,,,0009,0007,G01,Right
+0009,R09,Küche,Küche,,,0010,0008,G01,Right
+0010,R10,Archiv,Archiv,,,0011,0009,G01,Right
+0011,R11,Serverraum,Technikraum,0012,0016,0010,,G01,Center
+0012,R12,Labor,Labor,0013,0011,,,G01,Above
+0013,R13,Werkstatt,Werkstatt,0014,0012,,,G01,Above
+0014,R14,Bibliothek,Bibliothek,0015,0013,,,G01,Above
+0015,R15,Leseraum,Leseraum,,0014,,,G01,Above
+0016,R16,Seminarraum,Seminarraum,0011,0017,,,G01,Below
+0017,R17,Büro 3,Büro,0016,0018,,,G01,Below
+0018,R18,Büro 4,Büro,0017,0019,,,G01,Below
+0019,R19,Büro 5,Büro,0018,0020,,,G01,Below
+0020,R20,Konferenzraum 2,Besprechungsraum,0019,0021,,,G01,Below
+0021,R21,Konferenzraum 3,Besprechungsraum,0020,0022,,,G01,Below
+0022,R22,Konferenzraum 4,Besprechungsraum,0021,0023,,,G01,Below
+0023,R23,Büro 6,Büro,0022,0024,,,G01,Below
+0024,R24,Büro 7,Büro,0023,0025,,,G01,Below
+0025,R25,Labor 2,Labor,0024,0026,,,G01,Below
+0026,R26,Labor 3,Labor,0025,0027,,,G01,Below
+0027,R27,Werkstatt 2,Werkstatt,0026,,0028,,G01,Below
+0028,R28,Lager 2,Lager,,,0029,0027,G01,Right
+0029,R29,Archiv 2,Archiv,,,0030,0028,G01,Right
+0030,R30,Bibliothek 2,Bibliothek,,,,0029,G01,Right

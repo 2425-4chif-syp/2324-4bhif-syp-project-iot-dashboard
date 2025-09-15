@@ -1,0 +1,37 @@
+.map {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  
+  .room {
+    background-color: #ddd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #aaa;
+    cursor: pointer;
+  }
+  
+  .room-details {
+    position: relative;
+  }
+  
+  .pv-panel {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background-color: #f00;
+    cursor: pointer;
+  }
+  
+  .popup {
+    position: absolute;
+    top: 50px;
+    left: 50px;
+    background: white;
+    border: 1px solid #ccc;
+    padding: 10px;
+    z-index: 10;
+  }
+  

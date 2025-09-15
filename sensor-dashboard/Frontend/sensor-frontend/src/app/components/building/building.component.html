@@ -1,0 +1,176 @@
+<div class="building-container" [class.sidebar-open]="showSidebar" cdkDropListGroup>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-content">
+      <!-- Linke Seite: Titel -->
+      <div class="header-left">
+        <h1 class="title">Sensor-Dashboard</h1>
+      </div>
+      
+      <!-- Mitte: Filter Buttons -->
+      <div class="header-center">
+        <div class="filter-buttons">
+          <mat-button-toggle-group>
+            <mat-button-toggle (click)="setSelectedType('temperature')" [checked]="selectedSensorType === 'temperature'">
+              Temperature
+            </mat-button-toggle>
+            <mat-button-toggle (click)="setSelectedType('humidity')" [checked]="selectedSensorType === 'humidity'">
+              Humidity
+            </mat-button-toggle>
+            <mat-button-toggle (click)="setSelectedType('co2')" [checked]="selectedSensorType === 'co2'">
+              CO2
+            </mat-button-toggle>
+          </mat-button-toggle-group>
+        </div>
+      </div>
+      
+      <!-- Rechte Seite: Schwellenwerte-Button und Toggle Sidebar Button -->
+      <div class="header-right">
+        <button mat-button class="standard-button" (click)="openThresholdSettingsDialog()">
+          <mat-icon>tune</mat-icon>
+          Schwellenwerte
+        </button>
+        <button class="toggle-sidebar-button" (click)="toggleSidebar()">
+          <mat-icon>{{ showSidebar ? 'chevron_right' : 'chevron_left' }}</mat-icon>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main content area with floors -->
+  <div class="main-content">
+    <!-- Floors -->
+    <div class="floors-container">
+      <div class="floor" *ngIf="secondFloorRooms.length > 0">
+        <h2>Second Floor</h2>
+        <div class="rooms-grid">
+          <div *ngFor="let room of secondFloorRooms" 
+               class="room" 
+               [class]="getColorClass(room)"
+               cdkDropList
+               [cdkDropListData]="room"
+               (cdkDropListDropped)="onSensorDrop($event)">
+            <!-- Remove-Sensor-Button nur anzeigen, wenn Sensoren zugewiesen sind -->
+            <div *ngIf="getRoomSensors(room).length > 0" class="remove-sensor-btn">
+              <mat-icon (click)="removeSensorFromRoom(room, getRoomSensors(room)[0].sensorId, getRoomSensors(room)[0].floor)" title="Sensor entfernen">close</mat-icon>
+            </div>
+            <div class="room-name">{{ room.roomName }}</div>
+            <div class="sensor-data" *ngIf="room.sensor">
+              <div class="sensor-value" *ngFor="let type of room.sensor.sensorTypes">
+                <ng-container *ngIf="shouldShowSensorType(type) && room.sensor.latestValues[type]">
+                  {{ room.sensor.latestValues[type].value }}
+                  {{ type === 'temperature' ? '°C' : type === 'humidity' ? '%' : 'ppm' }}
+                </ng-container>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="floor" *ngIf="firstFloorRooms.length > 0">
+        <h2>First Floor</h2>
+        <div class="rooms-grid">
+          <div *ngFor="let room of firstFloorRooms" 
+               class="room" 
+               [class]="getColorClass(room)"
+               cdkDropList
+               [cdkDropListData]="room"
+               (cdkDropListDropped)="onSensorDrop($event)">
+            <!-- Remove-Sensor-Button nur anzeigen, wenn Sensoren zugewiesen sind -->
+            <div *ngIf="getRoomSensors(room).length > 0" class="remove-sensor-btn">
+              <mat-icon (click)="removeSensorFromRoom(room, getRoomSensors(room)[0].sensorId, getRoomSensors(room)[0].floor)" title="Sensor entfernen">close</mat-icon>
+            </div>
+            <div class="room-name">{{ room.roomName }}</div>
+            <div class="sensor-data" *ngIf="room.sensor">
+              <div class="sensor-value" *ngFor="let type of room.sensor.sensorTypes">
+                <ng-container *ngIf="shouldShowSensorType(type) && room.sensor.latestValues[type]">
+                  {{ room.sensor.latestValues[type].value }}
+                  {{ type === 'temperature' ? '°C' : type === 'humidity' ? '%' : 'ppm' }}
+                </ng-container>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="floor" *ngIf="groundFloorRooms.length > 0">
+        <h2>Ground Floor</h2>
+        <div class="rooms-grid">
+          <div *ngFor="let room of groundFloorRooms" 
+               class="room" 
+               [class]="getColorClass(room)"
+               cdkDropList
+               [cdkDropListData]="room"
+               (cdkDropListDropped)="onSensorDrop($event)">
+            <!-- Remove-Sensor-Button nur anzeigen, wenn Sensoren zugewiesen sind -->
+            <div *ngIf="getRoomSensors(room).length > 0" class="remove-sensor-btn">
+              <mat-icon (click)="removeSensorFromRoom(room, getRoomSensors(room)[0].sensorId, getRoomSensors(room)[0].floor)" title="Sensor entfernen">close</mat-icon>
+            </div>
+            <div class="room-name">{{ room.roomName }}</div>
+            <div class="sensor-data" *ngIf="room.sensor">
+              <div class="sensor-value" *ngFor="let type of room.sensor.sensorTypes">
+                <ng-container *ngIf="shouldShowSensorType(type) && room.sensor.latestValues[type]">
+                  {{ room.sensor.latestValues[type].value }}
+                  {{ type === 'temperature' ? '°C' : type === 'humidity' ? '%' : 'ppm' }}
+                </ng-container>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="floor" *ngIf="basementRooms.length > 0">
+        <h2>Basement</h2>
+        <div class="rooms-grid">
+          <div *ngFor="let room of basementRooms" 
+               class="room" 
+               [class]="getColorClass(room)"
+               cdkDropList
+               [cdkDropListData]="room"
+               (cdkDropListDropped)="onSensorDrop($event)">
+            <!-- Remove-Sensor-Button nur anzeigen, wenn Sensoren zugewiesen sind -->
+            <div *ngIf="getRoomSensors(room).length > 0" class="remove-sensor-btn">
+              <mat-icon (click)="removeSensorFromRoom(room, getRoomSensors(room)[0].sensorId, getRoomSensors(room)[0].floor)" title="Sensor entfernen">close</mat-icon>
+            </div>
+            <div class="room-name">{{ room.roomName }}</div>
+            <div class="sensor-data" *ngIf="room.sensor">
+              <div class="sensor-value" *ngFor="let type of room.sensor.sensorTypes">
+                <ng-container *ngIf="shouldShowSensorType(type) && room.sensor.latestValues[type]">
+                  {{ room.sensor.latestValues[type].value }}
+                  {{ type === 'temperature' ? '°C' : type === 'humidity' ? '%' : 'ppm' }}
+                </ng-container>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sidebar with unassigned sensors -->
+    <div class="sensors-sidebar" *ngIf="showSidebar">
+      <h3>Nicht zugewiesene Sensoren</h3>
+      <div class="unassigned-sensors-list" 
+           cdkDropList 
+           [cdkDropListData]="unassignedSensors">
+        <div *ngFor="let sensor of unassignedSensors" 
+             class="unassigned-sensor"
+             cdkDrag
+             [attr.data-sensor-id]="sensor.sensorId"
+             [attr.data-floor]="sensor.floor">
+          <div class="sensor-content">
+            <div class="sensor-id">{{ sensor.sensorId }}</div>
+            <div class="sensor-floor">Floor: {{ sensor.floor }}</div>
+            <div class="drag-hint">
+              <mat-icon>drag_indicator</mat-icon>
+            </div>
+          </div>
+          <!-- Preview when dragging -->
+          <div *cdkDragPreview class="sensor-drag-preview">
+            <p>{{ sensor.sensorId }}</p>
+            <p>Floor: {{ sensor.floor }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
