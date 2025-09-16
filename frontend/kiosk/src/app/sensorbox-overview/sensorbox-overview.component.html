@@ -1,12 +1,29 @@
 <div class="sensorbox-container">
-  <!-- Oberer Bereich mit Graph und Einstellungen -->
+  <!-- Moderner Header mit Titel und Schwellenwerte-Button -->
+  <div class="sensorbox-header d-flex align-items-center justify-content-between mb-4" style="background: #ff8c5a; padding: 18px 32px; color: #fff; border-radius: 8px;">
+    <h2 style="margin: 0; font-weight: 700; font-size: 2rem; letter-spacing: 1px;">Sensor-Dashboard</h2>
+    <div class="d-flex align-items-center gap-3">
+      <button class="btn btn-light d-flex align-items-center" (click)="openSettings()" style="font-weight: 600;">
+        <i class="fas fa-sliders-h me-2"></i> Schwellenwerte
+      </button>
+      <button class="btn btn-light d-flex align-items-center" style="font-weight: 600;">
+        <i class="fas fa-arrow-right me-2"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Tabs für Temperatur, Luftfeuchtigkeit, CO₂ -->
+  <div class="sensorbox-tabs d-flex align-items-center mb-4" style="gap: 8px;">
+    <button class="tab-btn" [class.active]="activeTab === 'temperature'" (click)="activeTab = 'temperature'" style="padding: 8px 24px; border-radius: 6px; border: none; background: #fff; color: #ff8c5a; font-weight: 600;">Temperature</button>
+    <button class="tab-btn" [class.active]="activeTab === 'humidity'" (click)="activeTab = 'humidity'" style="padding: 8px 24px; border-radius: 6px; border: none; background: #fff; color: #ff8c5a; font-weight: 600;">Humidity</button>
+    <button class="tab-btn" [class.active]="activeTab === 'co2'" (click)="activeTab = 'co2'" style="padding: 8px 24px; border-radius: 6px; border: none; background: #fff; color: #ff8c5a; font-weight: 600;">CO2</button>
+  </div>
+
+  <!-- Chart und Einstellungen wie gehabt -->
   <div class="top-container d-flex justify-content-between align-items-center mb-4">
-    <!-- Graph -->
     <div class="chart-container">
       <canvas id="roomStatusChart"></canvas>
     </div>
-
-    <!-- Einstellungen -->
     <div class="settings-container">
       <button class="btn btn-orange d-flex align-items-center" (click)="openSettings()">
         <i class="fas fa-sliders-h me-2"></i> Schwellenwerte bearbeiten
@@ -25,11 +42,9 @@
     </select>
   </div>
 
-  <!-- Anzeige der Räume -->
+  <!-- Anzeige der Räume, Tab-abhängig -->
   <div *ngIf="selectedFilter === 'all'">
-    <!-- Etagen und zugehörige Räume -->
     <div *ngFor="let floor of floors" class="floor">
-      <!-- Etagenüberschrift -->
       <div class="floor-header" (click)="toggleFloor(floor)">
         <span>{{ floor }} (Etage)</span>
         <span class="room-count">
@@ -47,7 +62,6 @@
         </div>
       </div>
 
-      <!-- Räume der Etage -->
       <div *ngIf="isFloorOpen(floor)" class="rooms">
         <div
           *ngFor="let room of getRoomsForFloor(floor)"
@@ -70,50 +84,55 @@
             </div>
           </div>
           <div *ngIf="isRoomOpen(room)" class="room-details">
-            <!-- CO₂ -->
-            <div class="sensor sensor-co2" [ngClass]="getCo2Class(currentSensorboxValues.get(room)?.co2)">
-              <i class="fas fa-wind sensor-icon"></i>
-              <label>CO₂</label>
-              <span>{{ currentSensorboxValues.get(room)?.co2 || 'N/A' }} ppm</span>
-            </div>
-
-            <!-- Temperatur -->
-            <div class="sensor sensor-temperature" [ngClass]="getTemperatureClass(currentSensorboxValues.get(room)?.temperature)">
-              <i class="fas fa-thermometer-half sensor-icon"></i>
-              <label>Temperatur</label>
-              <span>{{ currentSensorboxValues.get(room)?.temperature || 'N/A' }}°C</span>
-            </div>
-
-            <!-- Luftfeuchtigkeit -->
-            <div class="sensor sensor-humidity" [ngClass]="getHumidityClass(currentSensorboxValues.get(room)?.humidity)">
-              <i class="fas fa-tint sensor-icon"></i>
-              <label>Luftfeuchtigkeit</label>
-              <span>{{ currentSensorboxValues.get(room)?.humidity || 'N/A' }}%</span>
-            </div>
+            <!-- Tab-abhängige Anzeige -->
+            <ng-container [ngSwitch]="activeTab">
+              <!-- Temperatur -->
+              <div *ngSwitchCase="'temperature'" class="sensor sensor-temperature" [ngClass]="getTemperatureClass(currentSensorboxValues.get(room)?.temperature)">
+                <i class="fas fa-thermometer-half sensor-icon"></i>
+                <label>Temperatur</label>
+                <span>{{ currentSensorboxValues.get(room)?.temperature || 'N/A' }}°C</span>
+              </div>
+              <!-- Luftfeuchtigkeit -->
+              <div *ngSwitchCase="'humidity'" class="sensor sensor-humidity" [ngClass]="getHumidityClass(currentSensorboxValues.get(room)?.humidity)">
+                <i class="fas fa-tint sensor-icon"></i>
+                <label>Luftfeuchtigkeit</label>
+                <span>{{ currentSensorboxValues.get(room)?.humidity || 'N/A' }}%</span>
+              </div>
+              <!-- CO₂ -->
+              <div *ngSwitchCase="'co2'" class="sensor sensor-co2" [ngClass]="getCo2Class(currentSensorboxValues.get(room)?.co2)">
+                <i class="fas fa-wind sensor-icon"></i>
+                <label>CO₂</label>
+                <span>{{ currentSensorboxValues.get(room)?.co2 || 'N/A' }} ppm</span>
+              </div>
+            </ng-container>
           </div>
-
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Gefilterte Räume ohne Etagenansicht -->
+  <!-- Gefilterte Räume ohne Etagenansicht, Tab-abhängig -->
   <div *ngIf="selectedFilter !== 'all'" class="filtered-rooms">
     <div *ngFor="let room of getFilteredRoomsForAllFloors()" class="filtered-room">
       <span>{{ room }} (Raum)</span>
       <div class="room-details">
-        <div class="sensor sensor-co2" [ngClass]="getCo2Class(currentSensorboxValues.get(room)?.co2)">
-          <label>CO₂</label>
-          <span>{{ currentSensorboxValues.get(room)?.co2 || 'N/A' }} ppm</span>
-        </div>
-        <div class="sensor sensor-temperature" [ngClass]="getTemperatureClass(currentSensorboxValues.get(room)?.temperature)">
-          <label>Temperatur</label>
-          <span>{{ currentSensorboxValues.get(room)?.temperature || 'N/A' }}°C</span>
-        </div>
-        <div class="sensor sensor-humidity" [ngClass]="getHumidityClass(currentSensorboxValues.get(room)?.humidity)">
-          <label>Luftfeuchtigkeit</label>
-          <span>{{ currentSensorboxValues.get(room)?.humidity || 'N/A' }}%</span>
-        </div>
+        <ng-container [ngSwitch]="activeTab">
+          <!-- Temperatur -->
+          <div *ngSwitchCase="'temperature'" class="sensor sensor-temperature" [ngClass]="getTemperatureClass(currentSensorboxValues.get(room)?.temperature)">
+            <label>Temperatur</label>
+            <span>{{ currentSensorboxValues.get(room)?.temperature || 'N/A' }}°C</span>
+          </div>
+          <!-- Luftfeuchtigkeit -->
+          <div *ngSwitchCase="'humidity'" class="sensor sensor-humidity" [ngClass]="getHumidityClass(currentSensorboxValues.get(room)?.humidity)">
+            <label>Luftfeuchtigkeit</label>
+            <span>{{ currentSensorboxValues.get(room)?.humidity || 'N/A' }}%</span>
+          </div>
+          <!-- CO₂ -->
+          <div *ngSwitchCase="'co2'" class="sensor sensor-co2" [ngClass]="getCo2Class(currentSensorboxValues.get(room)?.co2)">
+            <label>CO₂</label>
+            <span>{{ currentSensorboxValues.get(room)?.co2 || 'N/A' }} ppm</span>
+          </div>
+        </ng-container>
       </div>
     </div>
   </div>

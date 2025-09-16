@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { SensorBoxDTO } from "../model/SensorBoxDTO";
 import { SensorboxService } from "../services/sensorbox.service";
-import { NgClass, NgForOf, NgIf, NgOptimizedImage } from "@angular/common";
+import { NgClass, NgForOf, NgIf, NgOptimizedImage, CommonModule } from "@angular/common";
 import Chart from "chart.js/auto";
 import { FormsModule } from "@angular/forms";
 
@@ -13,14 +13,16 @@ import { FormsModule } from "@angular/forms";
     NgIf,
     NgOptimizedImage,
     NgClass,
-    FormsModule
+    FormsModule,
+    CommonModule
   ],
   templateUrl: './sensorbox-overview.component.html',
   styleUrl: './sensorbox-overview.component.css'
 })
 export class SensorboxOverviewComponent implements OnInit, OnDestroy {
+  public activeTab: string = 'temperature';
   public floors: string[] = [];
-  public filteredFloors: string[] = [...this.floors];
+  public filteredFloors: string[] = [];
   public rooms: string[] = [];
   public currentSensorboxValues: Map<string, SensorBoxDTO> = new Map();
 
@@ -265,30 +267,27 @@ export class SensorboxOverviewComponent implements OnInit, OnDestroy {
 
   //#region Service
   ngOnInit() {
-    // Abonniere echte Daten
-    this.sbs.getAllFloors().subscribe((data) => {
-      this.floors = data;
-      this.filteredFloors = [...this.floors];
-      console.log("All floors: ", this.floors);
-    });
-
-    this.sbs.getAllRooms().subscribe((data) => {
-      this.rooms = data;
-      console.log("All rooms: ", this.rooms);
-    });
-
-    // Regelmäßige Updates
-    this.intervalId = setInterval(() => {
-      this.rooms.forEach(room => {
-        this.sbs.getLatestValuesOfRoom(room).subscribe((data) => {
-          this.currentSensorboxValues.set(data.room, data);
-          console.log('Updated data:', this.currentSensorboxValues);
-        });
+    // Echte Daten vom Backend laden: Räume holen, dann für jeden Raum die aktuellen Werte holen
+    this.sbs.getAllRooms().subscribe((rooms: string[]) => {
+      this.rooms = rooms;
+      const sensorBoxRequests = rooms.map(room => this.sbs.getLatestValuesOfRoom(room));
+      if (sensorBoxRequests.length === 0) {
+        this.floors = [];
+        this.filteredFloors = [];
+        this.createDoughnutChart();
+        return;
+      }
+      // Alle Requests parallel ausführen und Ergebnisse sammeln
+      Promise.all(sensorBoxRequests.map(obs => obs.toPromise())).then((data: (SensorBoxDTO | undefined)[]) => {
+        // Filtere undefined heraus (z.B. falls ein Request fehlschlägt)
+        const validData = data.filter((d): d is SensorBoxDTO => d !== undefined);
+        this.floors = Array.from(new Set(validData.map(d => d.floor)));
+        validData.forEach((d) => this.currentSensorboxValues.set(d.room, d));
+        this.filteredFloors = [...this.floors];
+        this.applyFilter();
+        this.createDoughnutChart();
       });
-
-      // Aktualisiere das Diagramm
-      this.createDoughnutChart();
-    }, 1000);
+    });
   }
 
   ngOnDestroy() {

@@ -1,6 +1,8 @@
 // ...existing code...
 
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { Inject } from '@angular/core';
 import { Graph } from "../model/Graph";
 import { DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
 import { HttpClient} from "@angular/common/http";
@@ -189,7 +191,11 @@ export class GraphOverviewComponent implements OnInit, AfterViewInit {
   public availableWeeks: { start: Date, end: Date, label: string }[] = [];
 
 
-  constructor(public sanitizer: DomSanitizer, public http: HttpClient) { }
+  constructor(
+    public sanitizer: DomSanitizer,
+    public http: HttpClient,
+    @Inject(Router) private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.updateDaysInYear();
@@ -408,9 +414,13 @@ export class GraphOverviewComponent implements OnInit, AfterViewInit {
   }
 
   // Button-Handler für Sensor-Dashboard
-  public openSensorDashboard(): void {
-    // Hier kannst du die gewünschte Logik einfügen, z.B. Navigation oder Modal öffnen
-    alert('Sensor-Dashboard geöffnet!');
+  public openSensorDashboard(event?: Event): void {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+    // Passe die URL ggf. an den Port/die Route deines neuen Dashboards an!
+    window.open('http://localhost:4200', '_blank');
   }
 
   public changeDuration(): void {
