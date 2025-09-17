@@ -7,7 +7,7 @@ import { SensorThreshold, ThresholdConfig } from '../models/threshold.interface'
   providedIn: 'root'
 })
 export class ThresholdService {
-  private apiUrl = 'http://localhost:8081/thresholds';
+  private apiUrl = '/api/thresholds';
   
   // Default-Werte als Fallback, falls das Backend nicht erreichbar ist
   private defaultThresholds: ThresholdConfig = {

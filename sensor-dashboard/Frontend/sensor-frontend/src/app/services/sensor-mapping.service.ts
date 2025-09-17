@@ -10,7 +10,7 @@ import { tap, catchError } from 'rxjs/operators';
 export class SensorMappingService {
   
   // API Base URL für die Backend-Kommunikation
-  private readonly API_BASE_URL = 'http://localhost:8081/sensors/mappings';
+  private readonly API_BASE_URL = '/api/sensors/mappings';
   
   // Der lokale Speicher-Key für die Mappings (als Fallback)
   private readonly STORAGE_KEY = 'sensor-room-mappings';

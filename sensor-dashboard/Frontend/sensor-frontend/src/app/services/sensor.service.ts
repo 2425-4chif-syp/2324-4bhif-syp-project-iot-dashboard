@@ -8,8 +8,8 @@ import { SensorData, SensorValue } from '../models/sensor.interface';
   providedIn: 'root'
 })
 export class SensorService {
-  private realApiUrl = 'http://localhost:8081/sensors';
-  private testApiUrl = 'http://localhost:8082/sensors';
+  private realApiUrl = '/api/sensors';
+  private testApiUrl = '/api/sensors';
   
   // Flag to determine whether to use both real and test sensors
   private useTestSensors = true;

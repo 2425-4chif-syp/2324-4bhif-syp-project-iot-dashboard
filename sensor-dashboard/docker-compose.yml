@@ -1,0 +1,92 @@
+version: '3.8'
+
+services:
+  # Sensor Frontend
+  sensor-frontend:
+    build:
+      context: ./Frontend/sensor-frontend
+      dockerfile: Dockerfile
+    container_name: sensor-frontend
+    ports:
+      - "4200:80"  # Port 4200 nach außen für das Frontend
+    networks:
+      - sensor-network
+    restart: unless-stopped
+    depends_on:
+      - quarkus-app
+      - influxdb-sensor
+      - postgres
+
+  # Quarkus Backend
+  quarkus-app:
+    build:
+      context: ./sensor-data-service
+      dockerfile: src/main/docker/Dockerfile
+    container_name: quarkus-app
+    ports:
+      - "8081:8080"  # Port 8081 nach außen für API-Zugriff
+    environment:
+      - QUARKUS_DATASOURCE_JDBC_URL=jdbc:postgresql://postgres:5432/sensordata
+      - QUARKUS_DATASOURCE_USERNAME=sensor_user
+      - QUARKUS_DATASOURCE_PASSWORD=sensor_password
+      - INFLUXDB_URL=http://influxdb-sensor:8086
+      - INFLUXDB_TOKEN=${INFLUXDB_TOKEN}
+      - INFLUXDB_ORG=sensor-org
+      - INFLUXDB_BUCKET=sensor-data
+    networks:
+      - sensor-network
+    restart: unless-stopped
+    depends_on:
+      - postgres
+      - influxdb-sensor
+
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15
+    container_name: postgres-sensor
+    environment:
+      - POSTGRES_DB=sensordata
+      - POSTGRES_USER=sensor_user
+      - POSTGRES_PASSWORD=sensor_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - sensor-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sensor_user -d sensordata"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # InfluxDB for time series data
+  influxdb-sensor:
+    image: influxdb:2.7
+    container_name: influxdb-sensor
+    ports:
+      - "8086:8086"  # InfluxDB Web UI und API
+    environment:
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_USERNAME=admin
+      - DOCKER_INFLUXDB_INIT_PASSWORD=adminpassword
+      - DOCKER_INFLUXDB_INIT_ORG=sensor-org
+      - DOCKER_INFLUXDB_INIT_BUCKET=sensor-data
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=${INFLUXDB_TOKEN}
+    volumes:
+      - influxdb_data:/var/lib/influxdb2
+    networks:
+      - sensor-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8086/ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+networks:
+  sensor-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  influxdb_data:
