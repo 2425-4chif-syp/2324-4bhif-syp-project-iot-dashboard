@@ -22,13 +22,7 @@
    # Kopiere den generierten Token und füge ihn in die .env Datei ein
    ```
 
-3. **Quarkus Backend bauen:**
-   ```bash
-   chmod +x build.sh
-   ./build.sh
-   ```
-
-4. **Alle Services starten:**
+3. **Alle Services starten:**
    ```bash
    docker-compose up -d
    ```

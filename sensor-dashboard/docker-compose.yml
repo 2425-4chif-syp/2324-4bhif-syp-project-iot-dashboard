@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   # Sensor Frontend
   sensor-frontend:
@@ -19,7 +21,7 @@ services:
   quarkus-app:
     build:
       context: ./sensor-data-service
-      dockerfile: Dockerfile
+      dockerfile: src/main/docker/Dockerfile
     container_name: quarkus-app
     ports:
       - "8081:8080"  # Port 8081 nach außen für API-Zugriff
