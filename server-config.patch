@@ -1,0 +1,122 @@
+diff --git a/compose/frontend.yaml b/compose/frontend.yaml
+index 3118840..04ef5b3 100644
+--- a/compose/frontend.yaml
++++ b/compose/frontend.yaml
+@@ -1,12 +1,14 @@
+ services:
+   frontend:
+     build:
+-      context: /home/denis/Dokumente/SYP/Fork-github/2324-4bhif-syp-project-iot-dashboard
+-      dockerfile: frontend/docker/Dockerfile
++      context: ../frontend
++      dockerfile: docker/Dockerfile
+     image: leoenergy-kiosk:local
+     container_name: leoenergy-kiosk
+     ports:
+       - "8000:80"
++    volumes:
++      - ./data/graph-data.json:/usr/share/nginx/html/assets/data/graph-data.json
+     depends_on:
+       - influxdb
+       - grafana
+diff --git a/compose/grafana.ini b/compose/grafana.ini
+index 82e57b4..f456121 100644
+--- a/compose/grafana.ini
++++ b/compose/grafana.ini
+@@ -33,7 +33,7 @@
+ #################################### Server ####################################
+ [server]
+ # Protocol (http, https, h2, socket)
+-;protocol = http
++protocol = http
+ 
+ # This is the minimum TLS version allowed. By default, this value is empty. Accepted values are: TLS1.2, TLS1.3. If nothing is set TLS1.2 would be taken
+ ;min_tls_version = ""
+@@ -59,10 +59,10 @@ root_url = https://vm67.htl-leonding.ac.at/grafana/
+ #serve_from_sub_path = true
+ 
+ # If you host Grafana under a subpath (like /grafana), you must set the root_url to include the subpath.
+-root_url = %(protocol)s://%(domain)s:%(http_port)s/grafana/
++# root_url = %(protocol)s://%(domain)s:%(http_port)s/grafana/
+ 
+ # Enable serving Grafana from the subpath defined in root_url
+-serve_from_sub_path = true
++#serve_from_sub_path = true
+ 
+ 
+ # Log web requests
+diff --git a/compose/grafana.yaml b/compose/grafana.yaml
+index 41a4890..1e99f42 100644
+--- a/compose/grafana.yaml
++++ b/compose/grafana.yaml
+@@ -5,6 +5,8 @@ services:
+     restart: unless-stopped
+     environment:
+       - GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-simple-json-datasource
++      - GF_SERVER_ROOT_URL=https://vm67.htl-leonding.ac.at:443/grafana/
++      - GF_SERVER_SERVE_FROM_SUB_PATH=false
+     ports:
+       - "3000:3000"
+     volumes:
+diff --git a/compose/leoenergy.yaml b/compose/leoenergy.yaml
+index 965eb1d..ba25dea 100644
+--- a/compose/leoenergy.yaml
++++ b/compose/leoenergy.yaml
+@@ -3,6 +3,8 @@ services:
+     image: ghcr.io/2324-4bhif-syp/2324-4bhif-syp-project-iot-dashboard/leoenergy:latest
+     container_name: leoenergy-backend
+     restart: unless-stopped
++    environment:
++      - QUARKUS_LOG_LEVEL=DEBUG
+     ports:
+       - "8080:8080"
+     depends_on:
+diff --git a/frontend/docker/Dockerfile b/frontend/docker/Dockerfile
+index d817622..7ff5c39 100644
+--- a/frontend/docker/Dockerfile
++++ b/frontend/docker/Dockerfile
+@@ -1,6 +1,8 @@
+ FROM nginx:stable
+ 
+-COPY ./frontend/docker/nginx.conf /etc/nginx/conf.d/default.conf
+-COPY ./frontend/kiosk/dist/kiosk/browser/ /usr/share/nginx/html/
++# Der Pfad ist relativ zum Build-Kontext (Projektverzeichnis)
++COPY docker/nginx.conf /etc/nginx/nginx.conf
+ 
++# Angular-Build-Output – muss vorhanden sein!
++COPY kiosk/dist/kiosk/browser/ /usr/share/nginx/html/
+ 
+diff --git a/frontend/docker/nginx.conf b/frontend/docker/nginx.conf
+index d369d70..32350c2 100644
+--- a/frontend/docker/nginx.conf
++++ b/frontend/docker/nginx.conf
+@@ -1,10 +1,24 @@
+-server {
+-    listen 80;
+-    server_name localhost;
++worker_processes 1;
++
++events {
++    worker_connections 1024;
++}
++
++http {
++    include       mime.types;
++    default_type  application/octet-stream;
++    sendfile        on;
++
++    server {
++        listen 80;
++        server_name localhost;
+ 
+-    location /frontend/ {
+         root /usr/share/nginx/html;
+         index index.html;
+-        try_files $uri $uri/ /frontend/index.html;
++
++        location / {
++            try_files $uri $uri/ /index.html;
++        }
+     }
+ }
++
