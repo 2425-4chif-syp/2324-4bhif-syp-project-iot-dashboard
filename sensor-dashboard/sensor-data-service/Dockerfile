@@ -15,11 +15,8 @@ FROM eclipse-temurin:21-jre
 
 WORKDIR /app
 
-# Copy the built jar from build stage
-COPY --from=build /app/target/quarkus-app/lib/ /app/lib/
-COPY --from=build /app/target/quarkus-app/*.jar /app/
-COPY --from=build /app/target/quarkus-app/app/ /app/app/
-COPY --from=build /app/target/quarkus-app/quarkus/ /app/quarkus/
+# Copy the entire quarkus-app directory
+COPY --from=build /app/target/quarkus-app/ /app/
 
 EXPOSE 8080
 
