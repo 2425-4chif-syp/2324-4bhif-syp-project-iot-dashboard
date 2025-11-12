@@ -39,6 +39,7 @@
           },
           "configurations": {
             "production": {
+              "baseHref": "/sensor-data/",
               "budgets": [
                 {
                   "type": "initial",

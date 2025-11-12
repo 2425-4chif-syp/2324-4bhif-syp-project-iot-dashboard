@@ -13,6 +13,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { environment } from '../../../environments/environment';
 import { MatIconModule } from '@angular/material/icon';
 import { SensorMappingComponent } from '../sensor-mapping/sensor-mapping.component';
 import { ThresholdSettingsComponent } from '../threshold-settings/threshold-settings.component';
@@ -246,6 +247,21 @@ export class BuildingComponent implements OnInit, OnDestroy {
   // Methode zum Umschalten der Seitenleisten-Anzeige
   toggleSidebar(): void {
     this.showSidebar = !this.showSidebar;
+  }
+
+  // Öffnet das Kiosk-Frontend. Standardmäßig im selben Tab öffnen.
+  goToKiosk(openInNewTab: boolean = false): void {
+    try {
+      const url = environment.kioskUrl || 'http://localhost:4200';
+      if (openInNewTab) {
+        window.open(url, '_blank');
+      } else {
+        // Öffnet die Kiosk-App im gleichen Tab
+        window.location.href = url;
+      }
+    } catch (e) {
+      console.error('Fehler beim Öffnen des Kiosk-Frontends', e);
+    }
   }
 
   private normalizeSensorType(type: string): string {

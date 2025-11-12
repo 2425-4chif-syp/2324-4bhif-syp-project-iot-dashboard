@@ -30,6 +30,11 @@
           <mat-icon>tune</mat-icon>
           Schwellenwerte
         </button>
+        <!-- Button to go back to the kiosk frontend - opens in new tab by default -->
+        <button mat-button class="standard-button" title="Zurück zum Kiosk" (click)="goToKiosk(true)">
+          <mat-icon>exit_to_app</mat-icon>
+          Zurück zum Kiosk
+        </button>
         <button class="toggle-sidebar-button" (click)="toggleSidebar()">
           <mat-icon>{{ showSidebar ? 'chevron_right' : 'chevron_left' }}</mat-icon>
         </button>
