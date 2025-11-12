@@ -1,5 +1,15 @@
-*
-!target/*-runner
-!target/*-runner.jar
-!target/lib/*
-!target/quarkus-app/*
+# Ignore IDE files
+.idea/
+.vscode/
+*.iml
+
+# Ignore build artifacts (will be built in Docker)
+target/
+
+# Ignore git
+.git/
+.gitignore
+
+# Ignore local env files
+.env
+.env.local
