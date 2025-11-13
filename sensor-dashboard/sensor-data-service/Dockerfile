@@ -3,12 +3,14 @@ FROM maven:3.9.4-eclipse-temurin-21 AS build
 
 WORKDIR /app
 
-# Copy pom and source
+# Copy pom and source (including resources)
 COPY pom.xml ./
 COPY src/ ./src/
 
 # Build the application using Maven directly (Uber-JAR)
-RUN mvn clean package -DskipTests -Dquarkus.package.type=uber-jar
+# Force rebuild by touching application.properties
+RUN touch src/main/resources/application.properties && \
+    mvn clean package -DskipTests -Dquarkus.package.type=uber-jar
 
 # Runtime stage
 FROM eclipse-temurin:21-jre
