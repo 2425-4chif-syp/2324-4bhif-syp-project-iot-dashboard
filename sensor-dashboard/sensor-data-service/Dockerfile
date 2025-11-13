@@ -7,17 +7,17 @@ WORKDIR /app
 COPY pom.xml ./
 COPY src/ ./src/
 
-# Build the application using Maven directly
-RUN mvn clean package -DskipTests
+# Build the application using Maven directly (Uber-JAR)
+RUN mvn clean package -DskipTests -Dquarkus.package.type=uber-jar
 
 # Runtime stage
 FROM eclipse-temurin:21-jre
 
 WORKDIR /app
 
-# Copy the entire quarkus-app directory
-COPY --from=build /app/target/quarkus-app/ /app/
+# Copy the uber-jar
+COPY --from=build /app/target/*-runner.jar /app/app.jar
 
 EXPOSE 8080
 
-ENTRYPOINT ["java", "-jar", "/app/quarkus-run.jar"]
+ENTRYPOINT ["java", "-jar", "/app/app.jar"]
