@@ -7,8 +7,8 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
 import jakarta.transaction.Transactional;
 
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.logging.Logger;
 
 @ApplicationScoped
@@ -18,7 +18,7 @@ public class DatabaseInitializer {
     EntityManager entityManager;
 
     private static final Logger LOG = Logger.getLogger("DatabaseInitializer");
-    private static final String SQL_FILE_PATH = "src/main/resources/files/utils/sql/roomsInsert.sql";
+    private static final String SQL_FILE_PATH = "files/utils/sql/roomsInsert.sql";
 
     @Transactional
     public void initialize() {
@@ -40,9 +40,16 @@ public class DatabaseInitializer {
     @Transactional
     public void initializeDatabase() {
         try {
-            Log.info("Execute SQL-File: " + SQL_FILE_PATH);
+            Log.info("Execute SQL-File from classpath: " + SQL_FILE_PATH);
 
-            String sql = new String(Files.readAllBytes(Paths.get(SQL_FILE_PATH)));
+            // Read SQL file from classpath (works in JAR/Docker)
+            InputStream inputStream = getClass().getClassLoader().getResourceAsStream(SQL_FILE_PATH);
+            if (inputStream == null) {
+                Log.error("SQL-File not found in classpath: " + SQL_FILE_PATH);
+                return;
+            }
+            
+            String sql = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
 
             entityManager.createNativeQuery(sql).executeUpdate();
 
