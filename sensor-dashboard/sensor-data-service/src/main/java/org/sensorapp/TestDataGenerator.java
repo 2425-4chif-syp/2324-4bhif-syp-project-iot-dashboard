@@ -61,7 +61,7 @@ public class TestDataGenerator {
                         double temperature = 18 + random.nextDouble() * 8;
                         Point tempPoint = Point
                             .measurement("temperature")
-                            .addTag("sensor_id", sensorId)
+                            .addTag("sensor", sensorId)  // Fixed: use "sensor" instead of "sensor_id"
                             .addTag("floor", floor)
                             .addField("value", temperature)
                             .time(now, WritePrecision.NS);
@@ -71,7 +71,7 @@ public class TestDataGenerator {
                         double humidity = 30 + random.nextDouble() * 40;
                         Point humidityPoint = Point
                             .measurement("humidity")
-                            .addTag("sensor_id", sensorId)
+                            .addTag("sensor", sensorId)  // Fixed: use "sensor" instead of "sensor_id"
                             .addTag("floor", floor)
                             .addField("value", humidity)
                             .time(now, WritePrecision.NS);
@@ -81,7 +81,7 @@ public class TestDataGenerator {
                         double co2 = 400 + random.nextDouble() * 800;
                         Point co2Point = Point
                             .measurement("co2")
-                            .addTag("sensor_id", sensorId)
+                            .addTag("sensor", sensorId)  // Fixed: use "sensor" instead of "sensor_id"
                             .addTag("floor", floor)
                             .addField("value", co2)
                             .time(now, WritePrecision.NS);
