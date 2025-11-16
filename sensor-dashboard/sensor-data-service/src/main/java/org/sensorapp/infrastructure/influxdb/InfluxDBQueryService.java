@@ -31,7 +31,7 @@ public class InfluxDBQueryService {
         QueryApi queryApi = influxDBClient.getQueryApi();
 
         String query = String.format(
-                "from(bucket: \"sensor_bucket\") " +
+                "from(bucket: \"sensor-data\") " +
                         "|> range(start: %s) " +
                         "|> filter(fn: (r) => exists r.floor) " +
                         "|> keep(columns: [\"floor\"]) " +
@@ -69,7 +69,7 @@ public class InfluxDBQueryService {
 
         QueryApi queryApi = influxDBClient.getQueryApi();
         String query = String.format(
-                "from(bucket: \"sensor_bucket\") " +
+                "from(bucket: \"sensor-data\") " +
                         "|> range(start: %s) " +
                         "|> filter(fn: (r) => r[\"floor\"] == \"%s\") " + // Filter für 'floor'
                         "|> keep(columns: [\"sensor\"]) " + // Nur die Spalte '_value' behalten
@@ -120,7 +120,7 @@ public class InfluxDBQueryService {
         QueryApi queryApi = influxDBClient.getQueryApi();
         // Abfrage: Hole eindeutige Feldnamen für die Sensor/Floor-Kombination
         String query = String.format(
-                "from(bucket: \"sensor_bucket\") " +
+                "from(bucket: \"sensor-data\") " +
                         "|> range(start: %s) " +
                         "|> filter(fn: (r) => r[\"_measurement\"] == \"sensor_data\") " +
                         "|> filter(fn: (r) => r[\"floor\"] == \"%s\") " +
@@ -195,7 +195,7 @@ public class InfluxDBQueryService {
 
         // InfluxDB Flux Query (mit _time und _value)
         String query = String.format(
-                "from(bucket: \"sensor_bucket\") " +
+                "from(bucket: \"sensor-data\") " +
                         "|> range(start: %s) " +
                         "|> filter(fn: (r) => r[\"_measurement\"] == \"sensor_data\") " +
                         "|> filter(fn: (r) => r[\"floor\"] == \"%s\") " +
@@ -283,7 +283,7 @@ public class InfluxDBQueryService {
 
         // InfluxDB Flux Query, um alle Werte mit _time, _field (Sensortyp) und _value zu erhalten
         String query = String.format(
-                "from(bucket: \"sensor_bucket\") " +
+                "from(bucket: \"sensor-data\") " +
                         "|> range(start: %s) " +
                         "|> filter(fn: (r) => r[\"_measurement\"] == \"sensor_data\") " +
                         "|> filter(fn: (r) => r[\"floor\"] == \"%s\") " +
