@@ -416,17 +416,43 @@
   }
 
   .sensor-data {
-    font-size: 0.80em;
+    font-size: 0.85em;
     font-weight: 500;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    
+    .sensor-icon {
+      mat-icon {
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+        color: #ff6b6b;
+        opacity: 0.8;
+      }
+    }
 
     .sensor-value {
       background-color: rgba(255, 139, 124, 0.1);
-      padding: 1px 2px;
+      padding: 3px 6px;
       margin: 1px 0;
-      border-radius: 3px;
+      border-radius: 4px;
       display: flex;
-      justify-content: space-between;
-      align-items: center;
+      justify-content: center;
+      align-items: baseline;
+      gap: 3px;
+      min-width: 60px;
+      
+      .value {
+        font-weight: 600;
+        font-size: 1.1em;
+      }
+      
+      .unit {
+        font-size: 0.85em;
+        opacity: 0.8;
+      }
     }
   }
 

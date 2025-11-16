@@ -61,9 +61,10 @@
             </div>
             <div class="room-name">{{ room.roomName }}</div>
             <div class="sensor-data" *ngIf="room.sensor">
+              <div class="sensor-icon"><mat-icon>sensors</mat-icon></div>
               <div class="sensor-value" *ngFor="let type of room.sensor.sensorTypes">
                 <ng-container *ngIf="shouldShowSensorType(type) && room.sensor.latestValues[type]">
-                  {{ room.sensor.latestValues[type].value }}
+                  {{ room.sensor.latestValues[type].value | number:'1.0-1' }}
                   {{ type === 'temperature' ? '°C' : type === 'humidity' ? '%' : 'ppm' }}
                 </ng-container>
               </div>
@@ -87,9 +88,10 @@
             </div>
             <div class="room-name">{{ room.roomName }}</div>
             <div class="sensor-data" *ngIf="room.sensor">
+              <div class="sensor-icon"><mat-icon>sensors</mat-icon></div>
               <div class="sensor-value" *ngFor="let type of room.sensor.sensorTypes">
                 <ng-container *ngIf="shouldShowSensorType(type) && room.sensor.latestValues[type]">
-                  {{ room.sensor.latestValues[type].value }}
+                  {{ room.sensor.latestValues[type].value | number:'1.0-1' }}
                   {{ type === 'temperature' ? '°C' : type === 'humidity' ? '%' : 'ppm' }}
                 </ng-container>
               </div>
@@ -113,9 +115,10 @@
             </div>
             <div class="room-name">{{ room.roomName }}</div>
             <div class="sensor-data" *ngIf="room.sensor">
+              <div class="sensor-icon"><mat-icon>sensors</mat-icon></div>
               <div class="sensor-value" *ngFor="let type of room.sensor.sensorTypes">
                 <ng-container *ngIf="shouldShowSensorType(type) && room.sensor.latestValues[type]">
-                  {{ room.sensor.latestValues[type].value }}
+                  {{ room.sensor.latestValues[type].value | number:'1.0-1' }}
                   {{ type === 'temperature' ? '°C' : type === 'humidity' ? '%' : 'ppm' }}
                 </ng-container>
               </div>
@@ -139,9 +142,10 @@
             </div>
             <div class="room-name">{{ room.roomName }}</div>
             <div class="sensor-data" *ngIf="room.sensor">
+              <div class="sensor-icon"><mat-icon>sensors</mat-icon></div>
               <div class="sensor-value" *ngFor="let type of room.sensor.sensorTypes">
                 <ng-container *ngIf="shouldShowSensorType(type) && room.sensor.latestValues[type]">
-                  {{ room.sensor.latestValues[type].value }}
+                  {{ room.sensor.latestValues[type].value | number:'1.0-1' }}
                   {{ type === 'temperature' ? '°C' : type === 'humidity' ? '%' : 'ppm' }}
                 </ng-container>
               </div>
