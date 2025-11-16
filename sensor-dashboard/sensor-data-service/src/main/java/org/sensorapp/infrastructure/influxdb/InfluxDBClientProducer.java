@@ -5,19 +5,28 @@ import com.influxdb.client.InfluxDBClientFactory;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Singleton;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 @ApplicationScoped
 public class InfluxDBClientProducer {
 
-    private static final String INFLUXDB_URL = "http://127.0.0.1:8086";
-    private static final String INFLUXDB_TOKEN = "kSVvcPgB5NGbQC2NVo28nR8YyKjTohIZNhfu7AoKoaxrEkt6CtdKG4lZWQY1zDD0o1uKEUezQScLxjDRMBcuNw==";
-    private static final String INFLUXDB_ORG = "sensor_org";
-    private static final String INFLUXDB_BUCKET = "sensor_bucket";
+    @ConfigProperty(name = "influxdb.url")
+    String influxdbUrl;
+
+    @ConfigProperty(name = "influxdb.token")
+    String influxdbToken;
+
+    @ConfigProperty(name = "influxdb.org")
+    String influxdbOrg;
+
+    @ConfigProperty(name = "influxdb.bucket")
+    String influxdbBucket;
 
     @Produces
     @Singleton
     public InfluxDBClient createInfluxDBClient() {
-        return InfluxDBClientFactory.create(INFLUXDB_URL, INFLUXDB_TOKEN.toCharArray(), INFLUXDB_ORG, INFLUXDB_BUCKET);
+        System.out.println("🔧 Creating InfluxDBClient with URL: " + influxdbUrl);
+        return InfluxDBClientFactory.create(influxdbUrl, influxdbToken.toCharArray(), influxdbOrg, influxdbBucket);
     }
 }
 
