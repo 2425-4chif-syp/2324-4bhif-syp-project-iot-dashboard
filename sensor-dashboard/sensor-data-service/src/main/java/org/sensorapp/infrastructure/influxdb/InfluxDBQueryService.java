@@ -118,15 +118,14 @@ public class InfluxDBQueryService {
         timeRange = (timeRange == null || timeRange.isEmpty()) ? "-30d" : timeRange;
 
         QueryApi queryApi = influxDBClient.getQueryApi();
-        // Abfrage: Hole eindeutige Feldnamen für die Sensor/Floor-Kombination
+        // Abfrage: Hole eindeutige Measurement-Namen (nicht _field, sondern _measurement!)
         String query = String.format(
                 "from(bucket: \"sensor-data\") " +
                         "|> range(start: %s) " +
-                        "|> filter(fn: (r) => r[\"_measurement\"] == \"sensor_data\") " +
                         "|> filter(fn: (r) => r[\"floor\"] == \"%s\") " +
                         "|> filter(fn: (r) => r[\"sensor\"] == \"%s\") " +
-                        "|> keep(columns: [\"_field\"]) " +   // Behalte nur die Feld-Spalte
-                        "|> distinct(column: \"_field\")",    // Hole eindeutige Feldnamen
+                        "|> keep(columns: [\"_measurement\"]) " +
+                        "|> distinct(column: \"_measurement\")",
                 timeRange, floor, sensorId
         );
 
@@ -145,7 +144,7 @@ public class InfluxDBQueryService {
 
             Set<String> fields = new HashSet<>();
             String[] lines = rawResponse.split("\n");
-            int fieldIndex = -1;
+            int measurementIndex = -1;
 
             for (int i = 0; i < lines.length; i++) {
                 String line = lines[i].trim();
@@ -155,8 +154,8 @@ public class InfluxDBQueryService {
                 if (i == 0) {
                     String[] headers = line.split(",");
                     for (int j = 0; j < headers.length; j++) {
-                        if ("_field".equals(headers[j].trim())) {
-                            fieldIndex = j;
+                        if ("_measurement".equals(headers[j].trim())) {
+                            measurementIndex = j;
                             break;
                         }
                     }
@@ -164,13 +163,13 @@ public class InfluxDBQueryService {
                 }
 
                 // Datenzeilen verarbeiten
-                if (fieldIndex == -1) continue; // Header nicht gefunden
+                if (measurementIndex == -1) continue; // Header nicht gefunden
 
                 String[] columns = line.split(",");
-                if (columns.length > fieldIndex) {
-                    String fieldName = columns[fieldIndex].trim();
-                    if (!fieldName.isEmpty()) {
-                        fields.add(fieldName);
+                if (columns.length > measurementIndex) {
+                    String measurementName = columns[measurementIndex].trim();
+                    if (!measurementName.isEmpty()) {
+                        fields.add(measurementName);
                     }
                 }
             }
@@ -193,16 +192,15 @@ public class InfluxDBQueryService {
 
         QueryApi queryApi = influxDBClient.getQueryApi();
 
-        // InfluxDB Flux Query (mit _time und _value)
+        // InfluxDB Flux Query (sensorType ist eigentlich die Measurement: temperature, humidity, co2)
         String query = String.format(
                 "from(bucket: \"sensor-data\") " +
                         "|> range(start: %s) " +
-                        "|> filter(fn: (r) => r[\"_measurement\"] == \"sensor_data\") " +
+                        "|> filter(fn: (r) => r[\"_measurement\"] == \"%s\") " +
                         "|> filter(fn: (r) => r[\"floor\"] == \"%s\") " +
                         "|> filter(fn: (r) => r[\"sensor\"] == \"%s\") " +
-                        "|> filter(fn: (r) => r[\"_field\"] == \"%s\") " +
                         "|> keep(columns: [\"_time\", \"_value\"])", // Behalte Zeitstempel und Wert
-                timeRange, floor, sensorId, sensorType
+                timeRange, sensorType, floor, sensorId
         );
 
         System.out.println("Executing Query: " + query);
@@ -281,14 +279,13 @@ public class InfluxDBQueryService {
 
         QueryApi queryApi = influxDBClient.getQueryApi();
 
-        // InfluxDB Flux Query, um alle Werte mit _time, _field (Sensortyp) und _value zu erhalten
+        // InfluxDB Flux Query, um alle Werte mit _time, _measurement (Sensortyp) und _value zu erhalten
         String query = String.format(
                 "from(bucket: \"sensor-data\") " +
                         "|> range(start: %s) " +
-                        "|> filter(fn: (r) => r[\"_measurement\"] == \"sensor_data\") " +
                         "|> filter(fn: (r) => r[\"floor\"] == \"%s\") " +
                         "|> filter(fn: (r) => r[\"sensor\"] == \"%s\") " +
-                        "|> keep(columns: [\"_time\", \"_field\", \"_value\"])", // Behalte Zeitstempel, Sensortyp und Wert
+                        "|> keep(columns: [\"_time\", \"_measurement\", \"_value\"])", // Behalte Zeitstempel, Measurement (=Sensortyp) und Wert
                 timeRange, floor, sensorId
         );
 
@@ -304,7 +301,7 @@ public class InfluxDBQueryService {
             String[] lines = rawResponse.split("\n");
             int valueIndex = -1;
             int timeIndex = -1;
-            int fieldIndex = -1;
+            int measurementIndex = -1;
 
             for (int i = 0; i < lines.length; i++) {
                 String line = lines[i].trim();
@@ -316,25 +313,25 @@ public class InfluxDBQueryService {
                     for (int j = 0; j < headers.length; j++) {
                         if ("_value".equals(headers[j].trim())) valueIndex = j;
                         if ("_time".equals(headers[j].trim())) timeIndex = j;
-                        if ("_field".equals(headers[j].trim())) fieldIndex = j;
+                        if ("_measurement".equals(headers[j].trim())) measurementIndex = j;
                     }
                     continue;
                 }
 
                 // Datenzeilen verarbeiten
-                if (valueIndex == -1 || timeIndex == -1 || fieldIndex == -1) continue; // Header nicht gefunden
+                if (valueIndex == -1 || timeIndex == -1 || measurementIndex == -1) continue; // Header nicht gefunden
 
                 String[] columns = line.split(",");
-                if (columns.length > valueIndex && columns.length > timeIndex && columns.length > fieldIndex) {
+                if (columns.length > valueIndex && columns.length > timeIndex && columns.length > measurementIndex) {
                     String valueStr = columns[valueIndex].trim();
                     String timeStr = columns[timeIndex].trim();
-                    String fieldStr = columns[fieldIndex].trim(); // Sensortyp (z. B. CO2, Temperatur)
+                    String measurementStr = columns[measurementIndex].trim(); // Sensortyp (z. B. temperature, humidity, co2)
 
                     if (!valueStr.isEmpty()) {
                         try {
                             double sensorValue = Double.parseDouble(valueStr);
                             Instant timestamp = Instant.parse(timeStr); // Zeitstempel als Instant speichern
-                            sensorValues.add(new SensorDataDTO(timestamp, fieldStr, sensorValue));
+                            sensorValues.add(new SensorDataDTO(timestamp, measurementStr, sensorValue));
                         } catch (NumberFormatException e) {
                             System.err.println("Failed to parse value: " + valueStr);
                         } catch (DateTimeParseException e) {
