@@ -26,13 +26,15 @@ public class SensorMappingService {
 
     private static final Logger LOGGER = Logger.getLogger(SensorMappingService.class.getName());
     private static final String MEASUREMENT_NAME = "sensor_room_mapping";
-    private static final String BUCKET_NAME = "sensor_mappings";
 
     @Inject
     InfluxDBClient influxDBClient;
 
     @ConfigProperty(name = "influxdb.org")
     String organization;
+
+    @ConfigProperty(name = "influxdb.bucket")
+    String bucket;
 
     /**
      * Speichert oder aktualisiert eine Sensor-zu-Raum Zuordnung in InfluxDB
@@ -50,7 +52,7 @@ public class SensorMappingService {
                     .time(Instant.now(), WritePrecision.NS);
 
             try (WriteApi writeApi = influxDBClient.getWriteApi()) {
-                writeApi.writePoint(BUCKET_NAME, organization, point);
+                writeApi.writePoint(bucket, organization, point);
                 LOGGER.info("Sensor-Mapping gespeichert: " + mapping);
                 return true;
             }
@@ -74,7 +76,7 @@ public class SensorMappingService {
                 |> group(columns: ["sensorId", "floor"])
                 |> last()
                 |> drop(columns: ["_start", "_stop"])
-                """, BUCKET_NAME, MEASUREMENT_NAME);
+                """, bucket, MEASUREMENT_NAME);
 
             QueryApi queryApi = influxDBClient.getQueryApi();
             List<FluxTable> tables = queryApi.query(flux, organization);
@@ -123,7 +125,7 @@ public class SensorMappingService {
                 java.time.OffsetDateTime.now(),                  // Jetzt
                 String.format("_measurement=\"%s\" AND sensorId=\"%s\" AND floor=\"%s\"", 
                     MEASUREMENT_NAME, sensorId, floor),
-                BUCKET_NAME,
+                bucket,
                 organization
             );
             
@@ -148,7 +150,7 @@ public class SensorMappingService {
                 |> filter(fn: (r) => r.sensorId == "%s")
                 |> filter(fn: (r) => r.floor == "%s")
                 |> last()
-                """, BUCKET_NAME, MEASUREMENT_NAME, sensorId, floor);
+                """, bucket, MEASUREMENT_NAME, sensorId, floor);
 
             QueryApi queryApi = influxDBClient.getQueryApi();
             List<FluxTable> tables = queryApi.query(flux, organization);
@@ -183,7 +185,7 @@ public class SensorMappingService {
                 |> filter(fn: (r) => r._value == %d)
                 |> group(columns: ["sensorId", "floor"])
                 |> last()
-                """, BUCKET_NAME, MEASUREMENT_NAME, roomId);
+                """, bucket, MEASUREMENT_NAME, roomId);
 
             QueryApi queryApi = influxDBClient.getQueryApi();
             List<FluxTable> tables = queryApi.query(flux, organization);
