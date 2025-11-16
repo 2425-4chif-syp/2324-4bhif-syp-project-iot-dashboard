@@ -422,16 +422,6 @@
     flex-direction: column;
     align-items: center;
     gap: 4px;
-    
-    .sensor-icon {
-      mat-icon {
-        font-size: 18px;
-        width: 18px;
-        height: 18px;
-        color: #ff6b6b;
-        opacity: 0.8;
-      }
-    }
 
     .sensor-value {
       background-color: rgba(255, 139, 124, 0.1);
