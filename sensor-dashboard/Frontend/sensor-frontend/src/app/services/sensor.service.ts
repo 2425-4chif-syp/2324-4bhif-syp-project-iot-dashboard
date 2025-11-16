@@ -8,8 +8,8 @@ import { SensorData, SensorValue } from '../models/sensor.interface';
   providedIn: 'root'
 })
 export class SensorService {
-  private realApiUrl = '/api/sensors';
-  private testApiUrl = '/api/sensors';
+  private realApiUrl = '/sd/api/sensors';
+  private testApiUrl = '/sd/api/sensors';
   
   // Flag to determine whether to use both real and test sensors
   private useTestSensors = true;
