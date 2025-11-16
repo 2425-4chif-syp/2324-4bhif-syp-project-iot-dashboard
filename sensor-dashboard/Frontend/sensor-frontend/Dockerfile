@@ -12,8 +12,8 @@ RUN npm install
 # Copy source code
 COPY . .
 
-# Build the app
-RUN npm run build
+# Build the app with production configuration (includes baseHref)
+RUN npm run build -- --configuration production
 
 # Production stage
 FROM nginx:alpine
