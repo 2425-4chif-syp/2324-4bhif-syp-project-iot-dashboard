@@ -66,7 +66,7 @@ export class BuildingComponent implements OnInit, OnDestroy {
     private thresholdService: ThresholdService,
     private dialog: MatDialog
   ) {
-    this.startAutoSwitch();
+    //this.startAutoSwitch();
   }
 
   ngOnInit() {
