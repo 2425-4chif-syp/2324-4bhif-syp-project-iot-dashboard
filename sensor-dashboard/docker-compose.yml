@@ -33,6 +33,10 @@ services:
       - INFLUXDB_TOKEN=${INFLUXDB_TOKEN}
       - INFLUXDB_ORG=sensor-org
       - INFLUXDB_BUCKET=sensor-data
+      - MQTT_BROKER_URL=${MQTT_BROKER_URL}
+      - MQTT_CLIENT_ID=${MQTT_CLIENT_ID}
+      - MQTT_USERNAME=${MQTT_USERNAME}
+      - MQTT_PASSWORD=${MQTT_PASSWORD}
     networks:
       - sensor-network
     restart: unless-stopped
